@@ -712,7 +712,25 @@ function openTab(tab){
   if(tab==='mealplan') renderMealPlanGrid();
 }
 
-function addIngredient(){ const inp=document.getElementById('ing-input'); const v=inp.value.trim(); if(!v) return; v.split(/[,،]/).map(x=>x.trim()).filter(Boolean).forEach(x=>{if(!ingredients.includes(x))ingredients.push(x);}); inp.value=''; renderIngTags(); }
+function addIngredient(){ 
+  const inp=document.getElementById('ing-input'); 
+  const v=inp.value.trim(); 
+  if(!v) return; 
+  
+  // FIX: Chỉ thêm nguyên liệu nếu người dùng dùng dấu phẩy để tách, 
+  // không tự động tách ngắt từ (tránh lỗi "hành tây" -> "hành", "tây")
+  if (v.includes(',')) {
+    v.split(/[,،]/).map(x=>x.trim()).filter(Boolean).forEach(x=>{
+      if(!ingredients.includes(x)) ingredients.push(x);
+    });
+  } else {
+    // Nếu không có dấu phẩy, coi đó là 1 nguyên liệu duy nhất
+    if(!ingredients.includes(v)) ingredients.push(v);
+  }
+  
+  inp.value=''; 
+  renderIngTags(); 
+}
 function addIngOnEnter(e){if(e.key==='Enter')addIngredient();}
 function addQuickIngs(arr){arr.forEach(v=>{if(!ingredients.includes(v))ingredients.push(v);});renderIngTags();}
 function renderIngTags(){document.getElementById('ing-tags').innerHTML=ingredients.map((ing,i)=>`<span class="tag">${ing}<span class="remove" onclick="removeIng(${i})">×</span></span>`).join('');}
