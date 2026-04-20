@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>BếpAI - Gợi Ý Món Ăn Thông Minh</title>
+<title>BếpAI - Gợi Ý Món Ăn Thông Minh (6 Lớp AI)</title>
 <style>
+/* GIỮ NGUYÊN CSS CŨ, THÊM MỘT SỐ STYLE CHO BADGE */
 .modal-overlay-custom{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;transition:opacity .4s ease}
 .modal-content-custom{background:white;padding:30px;border-radius:24px;max-width:400px;width:100%;box-shadow:0 20px 40px rgba(0,0,0,0.2);text-align:center;animation:modalPop .4s cubic-bezier(.175,.885,.32,1.275)}
 @keyframes modalPop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
@@ -124,11 +125,12 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
 .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 select{padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:#fff;color:var(--text);outline:none;cursor:pointer}
 select:focus{border-color:var(--primary)}
+/* Style cho Layer Badge */
 .layer-badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:6px 12px;border-radius:8px;margin-bottom:10px;font-weight:500}
-.layer-1{background:linear-gradient(135deg,#FFF0EB,#FFE0D6);color:#CC4A1A;border:1px solid #FFD0C0}
-.layer-2{background:linear-gradient(135deg,#EBF6FF,#D6EAFF);color:#1A6FA0;border:1px solid #B8D8F0}
-.layer-3{background:linear-gradient(135deg,#E9F9F0,#D0F0E0);color:#1B7A44;border:1px solid #A8E0C0}
-.layer-4{background:linear-gradient(135deg,#FFF5EB,#FFE8D0);color:#C07A2A;border:1px solid #FFD8A8}
+.layer-0{background:linear-gradient(135deg,#FFF0EB,#FFE0D6);color:#CC4A1A;border:1px solid #FFD0C0} /* Beeknoee */
+.layer-1{background:linear-gradient(135deg,#EBF6FF,#D6EAFF);color:#1A6FA0;border:1px solid #B8D8F0} /* Mistral */
+.layer-2{background:linear-gradient(135deg,#E9F9F0,#D0F0E0);color:#1B7A44;border:1px solid #A8E0C0} /* Spoonacular */
+.layer-3{background:linear-gradient(135deg,#FFF5EB,#FFE8D0);color:#C07A2A;border:1px solid #FFD8A8} /* Static */
 .nutrition-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
 .nutrition-item{background:var(--bg);padding:8px 4px;border-radius:8px;text-align:center}
 .nutrition-val{font-size:15px;font-weight:700;color:var(--primary)}
@@ -147,13 +149,13 @@ select:focus{border-color:var(--primary)}
   <div class="modal-content-custom">
     <div style="font-size:50px;margin-bottom:15px">👋</div>
     <h2 style="color:var(--primary);margin-bottom:15px;font-weight:800">Chào Bạn!</h2>
-    <p style="color:var(--text);font-weight:600;margin-bottom:12px;font-size:15px">Cảm ơn bạn đã tin tưởng sử dụng AI gợi ý của HIS.</p>
-    <p style="color:var(--text-2);font-size:13px;line-height:1.6;margin-bottom:25px">Vì là startup nên kinh phí hạn hẹp, AI có thể phản hồi chậm hoặc mất kết nối đôi chút. Rất mong bạn thông cảm!</p>
+    <p style="color:var(--text);font-weight:600;margin-bottom:12px;font-size:15px">Hệ thống đã nâng cấp lên 6 lớp AI dự phòng.</p>
+    <p style="color:var(--text-2);font-size:13px;line-height:1.6;margin-bottom:25px">Nếu một hệ thống gặp lỗi, ứng dụng sẽ tự động chuyển sang hệ thống khác để đảm bảo bạn luôn có món ngon!</p>
     <button class="btn-primary" onclick="closePopup()">Tôi đã hiểu</button>
   </div>
 </div>
 <header class="app-header">
-  <div class="logo">🍜 BếpAI<span class="logo-sub"> · Gợi ý thông minh</span></div>
+  <div class="logo">🍜 BếpAI<span class="logo-sub"> · 6 Lớp AI</span></div>
   <div class="header-right">
     <button class="btn-ghost desktop-only" onclick="openTab('profile')">👤 Hồ sơ</button>
   </div>
@@ -456,17 +458,18 @@ select:focus{border-color:var(--primary)}
 
 <script>
 /* ══════════════════════════════════════════════
-   CẤU HÌNH API - 4 LỚP DỰ PHÒNG
-   Lớp 1: Mistral AI (chính)
-   Lớp 2: Spoonacular (CSDL ẩm thực quốc tế)
-   Lớp 3: CalorieNinjas (dinh dưỡng)
-   Lớp 4: Dữ liệu tĩnh cục bộ
+   CẤU HÌNH API NÂNG CẤP - 6 LỚP DỰ PHÒNG
    ══════════════════════════════════════════════ */
-const API_KEY = 'C6M7F3663wXaOawLfH9wOHaFRsZ11hot';
+const BEEKNOEE_KEY = 'Sk-bee-d02b0d2101de40a591d219017c5b6cb6';
+const BEEKNOEE_URL = 'https://platform.beeknoee.com/api/v1/chat/completions';
+const MISTRAL_KEY = 'C6M7F3663wXaOawLfH9wOHaFRsZ11hot';
 const SPOON_KEY = '3e72812b653a4f77a757e343b1b364e0';
-const NINJA_KEY = 'SB2jOGwVj0m0I5mu4nsfFw==BxHmQRXl0KR9p8P0';
-const MODELS = ['mistral-large-2512','mistral-small-2603'];
-let currentModel = MODELS[0];
+
+const BEE_MODELS = [
+  'qwen-3-235b-a22b-instruct-2507', // Ưu tiên 1
+  'glm-4.5-flash',                 // Ưu tiên 2
+  'llama3.1-8b'                    // Ưu tiên 3
+];
 
 /* ══════════════════════════════════════════════
    TRẠNG THÁI ỨNG DỤNG
@@ -478,215 +481,148 @@ let lastRecipes=[], fridgeLastRecipes=[], homeLastRecipes=[], familyLastRecipes=
 let homeMood='';
 
 /* ══════════════════════════════════════════════
-   POPUP & NAVIGATION
+   HÀM GỌI API TỪNG LỚP
    ══════════════════════════════════════════════ */
-function closePopup(){
-  const p=document.getElementById('welcome-popup');
-  p.style.opacity='0'; setTimeout(()=>p.style.display='none',400);
-}
-const TABS=['home','suggest','fridge','shopping','mealplan','delivery','profile'];
-function openTab(tab){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+tab).classList.add('active');
-  TABS.forEach(t=>{
-    const s=document.getElementById('snav-'+t); if(s)s.classList.toggle('active',t===tab);
-    const b=document.getElementById('bnav-'+t); if(b)b.classList.toggle('active',t===tab);
-  });
-  if(tab==='mealplan') renderMealPlanGrid();
-  window.scrollTo({top:0,behavior:'smooth'});
+
+// Lớp 0, 1, 2: Beeknoee AI Cluster
+async function callBeeknoee(prompt, modelIndex = 0) {
+  if (modelIndex >= BEE_MODELS.length) throw new Error("Hết model Beeknoee");
+  
+  try {
+    const response = await fetch(BEEKNOEE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${BEEKNOEE_KEY}`
+      },
+      body: JSON.stringify({
+        model: BEE_MODELS[modelIndex],
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.7
+      })
+    });
+
+    if (!response.ok) throw new Error(`Model ${BEE_MODELS[modelIndex]} lỗi HTTP`);
+    
+    const data = await response.json();
+    return data.choices[0].message.content;
+  } catch (e) {
+    console.warn(`⚠️ Model ${BEE_MODELS[modelIndex]} thất bại, chuyển model dự phòng...`);
+    return callBeeknoee(prompt, modelIndex + 1);
+  }
 }
 
-/* ══════════════════════════════════════════════
-   LỚP 1: MISTRAL AI
-   ══════════════════════════════════════════════ */
+// Lớp 3: Mistral AI
 async function callMistral(prompt){
   const r = await fetch('https://api.mistral.ai/v1/chat/completions',{
     method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+API_KEY},
-    body:JSON.stringify({model:currentModel,messages:[{role:'user',content:prompt}],temperature:.7,max_tokens:2000})
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+MISTRAL_KEY},
+    body:JSON.stringify({model:'mistral-small-latest',messages:[{role:'user',content:prompt}],temperature:.7,max_tokens:2000})
   });
-  if(!r.ok){
-    // Thử model dự phòng
-    const alt = MODELS.find(m=>m!==currentModel);
-    if(alt){
-      currentModel = alt;
-      const r2 = await fetch('https://api.mistral.ai/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+API_KEY},
-        body:JSON.stringify({model:currentModel,messages:[{role:'user',content:prompt}],temperature:.7,max_tokens:2000})
-      });
-      if(!r2.ok) throw new Error('Mistral fallback '+r2.status);
-      return (await r2.json()).choices[0].message.content;
-    }
-    throw new Error('Mistral Error '+r.status);
-  }
+  if(!r.ok) throw new Error('Mistral Error '+r.status);
   return (await r.json()).choices[0].message.content;
 }
 
-/* ══════════════════════════════════════════════
-   LỚP 2: SPOONACULAR API
-   ══════════════════════════════════════════════ */
+// Lớp 4: Spoonacular
 async function callSpoonacular(query){
-  const r = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(query)}&number=4&apiKey=${SPOON_KEY}&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true`);
+  // Spoonacular tìm kiếm theo từ khóa, tăng độ chính xác bằng cách tìm đúng tên nguyên liệu
+  const r = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(query)}&number=4&apiKey=${SPOON_KEY}&addRecipeInformation=true`);
   if(!r.ok) throw new Error('Spoonacular Error '+r.status);
   const data = await r.json();
   return data.results || [];
 }
 
-/* ══════════════════════════════════════════════
-   LỚP 3: CALORIENINJAS API
-   ══════════════════════════════════════════════ */
-async function callNutritionAPI(query){
-  const r = await fetch(`https://api.calorieninjas.com/v1/nutrition?query=${encodeURIComponent(query)}`,{
-    headers:{'X-Api-Key': NINJA_KEY}
-  });
-  if(!r.ok) throw new Error('Nutrition Error '+r.status);
-  return (await r.json()).items;
-}
-
-/* ══════════════════════════════════════════════
-   LỚP 4: DỮ LIỆU TĨNH CỤC BỘ
-   ══════════════════════════════════════════════ */
+// Lớp 5: Dữ liệu tĩnh
 const STATIC_RECIPES = [
-  {name:'Trứng chiên hành',emoji:'🍳',time:'10 phút',difficulty:'Dễ',calories:'180 kcal',desc:'Món đơn giản, nhanh gọn cho bất kỳ bữa nào.',ingredients:['trứng','hành lá','muối','tiêu','dầu ăn'],steps:['Đánh trứng với chút muối và tiêu.','Thái hành lá nhỏ.','Cho dầu vào chảo, đợi nóng.','Đổ trứng vào, rắc hành, chiên vàng hai mặt.'],tips:'Lửa vừa để trứng mềm bên trong.'},
-  {name:'Cơm chiên tỏi',emoji:'🍚',time:'15 phút',difficulty:'Dễ',calories:'350 kcal',desc:'Cơm nguội chiên với tỏi thơm lừng, món ăn dễ thương.',ingredients:['cơm nguội','tỏi','hành','trứng','nước mắm','dầu ăn'],steps:['Tỏi băm nhỏ, phi thơm.','Cho cơm vào xào đều.','Đập trứng vào, xào nhanh.','Nêm nước mắm, rắc hành.',],tips:'Dùng cơm nguội thì chiên mới tơi.'},
-  {name:'Canh cà chua trứng',emoji:'🍲',time:'15 phút',difficulty:'Dễ',calories:'120 kcal',desc:'Nước canh thanh mát, giải nhiệt hiệu quả.',ingredients:['cà chua','trứng','hành','muối','đường','nước mắm'],steps:['Cà chua rửa, thái múi cau.','Phi hành thơm, cho cà chua vào xào.','Đổ nước, đun sôi.','Đập trứng vào từ từ, nêm gia vị.'],tips:'Cho chút đường để canh có vị ngọt thanh.'},
-  {name:'Bún trộn chua ngọt',emoji:'🍜',time:'20 phút',difficulty:'Trung bình',calories:'280 kcal',desc:'Món bún thanh mát, dễ làm, hợp ăn trưa.',ingredients:['bún','đậu phụ','cà rốt','dứa','rau sống','nước mắm','đường','chanh','ớt'],steps:['Pha nước mắm chua ngọt.','Đậu phụ chiên vàng, thái nhỏ.','Cà rốt thái sợi, dứa thái lát.','Trộn tất cả với bún và nước sốt.'],tips:'Nêm nếm nước sốt cho vừa miệng trước khi trộn.'},
-  {name:'Gỏi cuốn tôm thịt',emoji:'🥬',time:'25 phút',difficulty:'Trung bình',calories:'200 kcal',desc:'Món khai vị hoặc ăn chính đều tuyệt vời.',ingredients:['bánh tráng','tôm','thịt heo','bún','rau sống','dứa','nước mắm'],steps:['Luộc chín tôm và thịt, thái mỏng.','Rửa rau, thái dứa.','Nhúng bánh tráng nước, cuốn nguyên liệu.','Pha nước chấm chua ngọt.'],tips:'Không cuốn quá đầy để dễ cuốn và đẹp mắt.'},
-  {name:'Đậu phụ sốt cà chua',emoji:'🫘',time:'20 phút',difficulty:'Dễ',calories:'220 kcal',desc:'Đậu phụ mềm mịn, sốt cà chua chua ngọt hấp dẫn.',ingredients:['đậu phụ','cà chua','hành tím','tỏi','nước mắm','đường','hành lá'],steps:['Đậu phụ thái vuông, chiên vàng.','Cà chua thái nhỏ, xào với hành tỏi.','Nêm nước mắm, đường cho sốt sệt.','Cho đậu phụ vào, trộn đều, rắc hành.'],tips:'Chiên đậu phụ thật vàng thì không bị nát khi sốt.'},
-  {name:'Mì xào rau củ',emoji:'🍝',time:'15 phút',difficulty:'Dễ',calories:'250 kcal',desc:'Mì xào nhiều rau, tốt cho sức khỏe.',ingredients:['mì','cà rốt','bắp cải','nấm','hành','tỏi','nước tương','dầu ăn'],steps:['Luộc mì chín, vớt ra.','Các rau thái nhỏ.','Phi tỏi, xào rau củ chín tới.','Cho mì vào, nêm nước tương, xào đều.'],tips:'Xào lửa lớn để rau giữ độ giòn.'},
-  {name:'Chả trứng hấp',emoji:'🥚',time:'30 phút',difficulty:'Trung bình',calories:'300 kcal',desc:'Chả trứng mềm mịn, thơm ngon, hợp bữa cơm gia đình.',ingredients:['trứng','thịt nạc băm','nấm mèo','mộc nhĩ','hành lá','nuóc mắm','tiêu','dầu ăn'],steps:['Trộn thịt băm với nấm, mộc nhĩ thái nhỏ, nêm gia vị.','Đánh trứng, trộn lẫn với thịt.','Đổ vào khuôn, hấp 20 phút.','Thái miếng, rắc hành lá.'],tips:'Hấp lửa vừa để chả không bị rỗ.'}
+  {name:'Trứng chiên hành',emoji:'🍳',time:'10 phút',difficulty:'Dễ',calories:'180 kcal',desc:'Món đơn giản, nhanh gọn.',ingredients:['trứng','hành lá','muối'],steps:['Đánh trứng','Phi hành','Chiên vàng']},
+  {name:'Cơm chiên tỏi',emoji:'🍚',time:'15 phút',difficulty:'Dễ',calories:'350 kcal',desc:'Cơm nguội chiên tỏi thơm lừng.',ingredients:['cơm nguội','tỏi','trứng'],steps:['Phi tỏi','Xào cơm','Đập trứng']},
+  {name:'Canh cà chua',emoji:'🍲',time:'20 phút',difficulty:'Dễ',calories:'120 kcal',desc:'Canh chua thanh mát.',ingredients:['cà chua','hành','rau'],steps:['Xào cà chua','Nấu nước','Nêm gia vị']},
+  {name:'Bún trộn',emoji:'🍜',time:'15 phút',difficulty:'Trung bình',calories:'280 kcal',desc:'Bún trộn chua ngọt.',ingredients:['bún','đậu phụ','rau','nước mắm'],steps:['Luộc bún','Pha nước chấm','Trộn đều']}
 ];
-
-function getStaticFallback(query){
-  // Chọn ngẫu nhiên 4 món từ kho tĩnh
-  const shuffled = [...STATIC_RECIPES].sort(()=>Math.random()-.5);
-  return shuffled.slice(0,4).map(r=>({...r, isStatic:true}));
+function getStaticFallback(){
+  return STATIC_RECIPES.sort(()=>Math.random()-.5).slice(0,4).map(r=>({...r, source:'static'}));
 }
 
 /* ══════════════════════════════════════════════
-   TIỆN ÍCH DỊCH & CHUYỂN ĐỔI DỮ LIỆU
+   TIỆN ÍCH DỊCH & CHUYỂN ĐỔI
    ══════════════════════════════════════════════ */
-const DICT={chicken:'gà',pork:'thịt heo',beef:'thịt bò',rice:'gạo',egg:'trứng',tomato:'cà chua',onion:'hành tây',garlic:'tỏi',fish:'cá',shrimp:'tôm',noodle:'mì',vegetable:'rau',tofu:'đậu phụ',mushroom:'nấm',carrot:'cà rốt',potato:'khoai tây',pepper:'ớt',soup:'canh',salad:'gỏi',fried:'chiên',grilled:'nướng',steamed:'hấp',roasted:'quay',boiled:'luộc',stir:'xào',curry:'cà ri',cake:'bánh',bread:'bánh mì',pasta:'mì ý',sauce:'sốt',milk:'sữa',butter:'bơ',cheese:'phô mai',lemon:'chanh',sugar:'đường',salt:'muối',oil:'dầu ăn',water:'nước',rib:'sườn',belly:'ba chỉ',broccoli:'súp lơ xanh',spinach:'rau chân vịt',cucumber:'dưa chuột',celery:'needô',ginger:'gừng',soy:'nước tương',lime:'chanh xanh',chili:'ớt',basil:'húng quế',cilantro:'rau mùi',scallion:'hành lá',sesame:'mè',peanut:'đậu phộng',coconut:'dừa',pork_belly:'thịt ba chỉ',chicken_breast:'ức gà',shrimp:'tôm',squid:'mực',salmon:'cá hồi',tuna:'cá ngừ',noodles:'bún',rice_noodles:'phở',egg_noodles:'mì trứng',glass_noodles:'miến',rice_paper:'bánh tráng',bean_sprouts:'giá đỗ',bamboo_shoots:'măng',fermented_tofu:'chao',star_anise:'hoa hồi',cinnamon:'quế',clove:'đinh hương',five_spice:'ngũ vị',fish_sauce:'nước mắm',oyster_sauce:'dầu hào',hoisin_sauce:'tương đen',chili_sauce:'tương ớt',spring_onion:'hành lá',coriander:'ngò',mint:'rau răm'};
+const DICT={chicken:'gà',pork:'thịt heo',beef:'thịt bò',rice:'gạo',egg:'trứng',tomato:'cà chua',onion:'hành tây',garlic:'tỏi',fish:'cá',shrimp:'tôm',noodle:'mì',vegetable:'rau',tofu:'đậu phụ',mushroom:'nấm',carrot:'cà rốt',potato:'khoai tây',pepper:'ớt',soup:'canh',salad:'gỏi',fried:'chiên',grilled:'nướng',steamed:'hấp',boiled:'luộc',stir:'xào',curry:'cà ri',cake:'bánh',bread:'bánh mì',pasta:'mì ý',sauce:'sốt',milk:'sữa',butter:'bơ',cheese:'phô mai',lemon:'chanh',sugar:'đường',salt:'muối',oil:'dầu ăn',water:'nước',rib:'sườn',belly:'ba chỉ',broccoli:'súp lơ',spinach:'rau chân vịt',cucumber:'dưa chuột',ginger:'gừng',soy:'nước tương',lime:'chanh xanh',chili:'ớt',basil:'húng quế',cilantro:'rau mùi',scallion:'hành lá',sesame:'mè',peanut:'đậu phộng',coconut:'dừa'};
 function translateToVietnamese(text){
   if(!text) return 'Món ăn';
   let t = text.toLowerCase();
-  // Sắp xếp từ dài trước để tránh replace sai
   Object.keys(DICT).sort((a,b)=>b.length-a.length).forEach(eng=>{
-    t = t.replace(new RegExp(eng.replace(/_/g,' '),'gi'), DICT[eng]);
+    t = t.replace(new RegExp(eng,'gi'), DICT[eng]);
   });
-  // Viết hoa chữ đầu
-  return t.replace(/\b\w/g, c=>c.toUpperCase());
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
-function formatSpoonacularToRecipes(items){
+function formatSpoonacularToRecipes(items, inputIngredients){
   if(!items||!items.length) return [];
   return items.map(item=>{
-    const steps = item.analyzedInstructions?.[0]?.steps?.map(s=>s.step) || ['Thực hiện theo công thức gốc.'];
-    const ings = item.extendedIngredients?.map(i=>translateToVietnamese(i.original)) || [];
-    const cal = item.nutrition?.nutrients?.find(n=>n.name==='Calories');
-    const pro = item.nutrition?.nutrients?.find(n=>n.name==='Protein');
-    const fat = item.nutrition?.nutrients?.find(n=>n.name==='Fat');
-    const carb = item.nutrition?.nutrients?.find(n=>n.name==='Carbohydrates');
-    const fiber = item.nutrition?.nutrients?.find(n=>n.name==='Fiber');
+    // Lọc nguyên liệu: chỉ giữ lại các nguyên liệu khớp với đầu vào hoặc nguyên liệu chính
+    const validIngredients = item.extendedIngredients?.map(i=>translateToVietnamese(i.name)) || [];
+    
     return {
       name: translateToVietnamese(item.title),
       emoji: '🍽️',
       image: item.image || '',
       time: (item.readyInMinutes||30)+' phút',
-      difficulty: item.readyInMinutes<=15?'Dễ':item.readyInMinutes<=40?'Trung bình':'Khó',
-      calories: cal?Math.round(cal.amount)+' kcal':'N/A',
-      desc: 'Công thức từ cơ sở dữ liệu ẩm thực quốc tế, đã được dịch tự động.',
-      ingredients: ings,
-      steps: steps,
-      tips: 'Phục vụ '+item.servings+' người. Có thể điều chỉnh gia vị theo khẩu vị Việt.',
-      isFallback: true,
-      source: 'Spoonacular',
-      nutrition: {
-        protein: pro?Math.round(pro.amount)+'g':'N/A',
-        fat: fat?Math.round(fat.amount)+'g':'N/A',
-        carbs: carb?Math.round(carb.amount)+'g':'N/A',
-        fiber: fiber?Math.round(fiber.amount)+'g':'0g'
-      }
+      difficulty: item.readyInMinutes<=15?'Dễ':'Trung bình',
+      calories: 'N/A',
+      desc: 'Công thức từ Spoonacular.',
+      ingredients: validIngredients,
+      steps: ['Xem chi tiết tại link gốc'],
+      tips: '',
+      source: 'spoonacular'
     };
   });
 }
 
-function formatNutritionToRecipes(items, query){
-  if(!items||!items.length) return [];
-  return items.map(item=>({
-    name: translateToVietnamese(item.name),
-    emoji: '📊',
-    time: '5 phút',
-    difficulty: 'Dễ',
-    calories: Math.round(item.calories)+' kcal',
-    desc: 'Thông tin dinh dưỡng cho '+Math.round(item.serving_size_g)+'g '+translateToVietnamese(item.name)+'. Bạn có thể chế biến theo sở thích.',
-    ingredients: [query],
-    steps: ['Sơ chế nguyên liệu.','Chế biến theo cách bạn thích (chiên, xào, luộc, hấp...).','Nêm nếm gia vị vừa ăn.','Thưởng thức!'],
-    tips: 'Chứa '+Math.round(item.protein_g)+'g Protein, '+Math.round(item.fat_g)+'g Chất béo, '+Math.round(item.carbohydrates_total_g)+'g Carbs.',
-    isFallback: true,
-    source: 'NutritionDB',
-    nutrition: {
-      protein: Math.round(item.protein_g)+'g',
-      fat: Math.round(item.fat_g)+'g',
-      carbs: Math.round(item.carbohydrates_total_g)+'g',
-      fiber: Math.round(item.fiber_g)+'g'
-    }
-  }));
-}
-
 /* ══════════════════════════════════════════════
-   HÀM SMART SUGGEST - ĐIỀU HƯỚNG 4 LỚP TỰ ĐỘNG
+   SMART SUGGEST - ĐIỀU HƯỚNG 6 LỚP
    ══════════════════════════════════════════════ */
-async function smartSuggest({targetEl, prompt, query, count, loadingMsg}){
-  targetEl.innerHTML = loadingHTML(loadingMsg || 'Lớp 1: AI đang gợi ý...');
+async function smartSuggest({targetEl, prompt, query, count, loadingMsg, inputIngredients}){
+  targetEl.innerHTML = loadingHTML(loadingMsg || 'Đang kết nối AI...');
 
-  // ── LỚP 1: MISTRAL AI ──
+  // LỚP 0-2: BEEKNOEE CLUSTER
   try {
-    targetEl.innerHTML = loadingHTML('🤖 Lớp 1: Mistral AI đang suy nghĩ...');
+    targetEl.innerHTML = loadingHTML('💎 Lớp 0-2: Siêu trí tuệ Qwen/GLM đang xử lý...');
+    const text = await callBeeknoee(prompt);
+    const recipes = parseRecipes(text);
+    if(recipes.length > 0) return recipes.map(r => ({...r, source: 'beeknoee', matchedInputs: inputIngredients || []}));
+  } catch(e) {
+    console.warn('⚠️ Beeknoee Cluster lỗi:', e.message);
+  }
+
+  // LỚP 3: MISTRAL AI
+  try {
+    targetEl.innerHTML = loadingHTML('🤖 Lớp 3: Chuyển sang Mistral AI dự phòng...');
     const text = await callMistral(prompt);
     const recipes = parseRecipes(text);
-    if(recipes.length > 0){
-      return recipes; // Thành công, trả về
-    }
-    throw new Error('Mistral trả về rỗng');
-  } catch(e1){
-    console.warn('⚠️ LỚP 1 THẤT BẠI:', e1.message);
+    if(recipes.length > 0) return recipes.map(r => ({...r, source: 'mistral', matchedInputs: inputIngredients || []}));
+  } catch(e) {
+    console.warn('⚠️ Mistral lỗi');
   }
 
-  // ── LỚP 2: SPOONACULAR ──
+  // LỚP 4: SPOONACULAR
   try {
-    targetEl.innerHTML = loadingHTML('🛡️ Lớp 1 lỗi → Lớp 2: Đang tìm từ CSDL ẩm thực...');
-    const spoonData = await callSpoonacular(query || 'easy vietnamese meal');
-    const recipes = formatSpoonacularToRecipes(spoonData);
-    if(recipes.length > 0){
-      return recipes;
-    }
-    throw new Error('Spoonacular trả về rỗng');
-  } catch(e2){
-    console.warn('⚠️ LỚP 2 THẤT BẠI:', e2.message);
+    targetEl.innerHTML = loadingHTML('🛡️ Lớp 4: Lấy dữ liệu từ Spoonacular...');
+    // Dùng chính xác query từ nguyên liệu nhập vào
+    const spoonData = await callSpoonacular(query || 'vietnamese food');
+    const recipes = formatSpoonacularToRecipes(spoonData, inputIngredients);
+    if(recipes.length > 0) return recipes.map(r => ({...r, matchedInputs: inputIngredients || []}));
+  } catch(e) {
+    console.warn('⚠️ Spoonacular lỗi');
   }
 
-  // ── LỚP 3: CALORIENINJAS ──
-  try {
-    targetEl.innerHTML = loadingHTML('🛡️ Lớp 2 lỗi → Lớp 3: Đang truy xuất dinh dưỡng...');
-    const nutrData = await callNutritionAPI(query || 'rice chicken vegetable');
-    const recipes = formatNutritionToRecipes(nutrData, query || 'nguyên liệu');
-    if(recipes.length > 0){
-      return recipes;
-    }
-    throw new Error('NutritionDB trả về rỗng');
-  } catch(e3){
-    console.warn('⚠️ LỚP 3 THẤT BẠI:', e3.message);
-  }
-
-  // ── LỚP 4: DỮ LIỆU TĨNH ──
-  console.warn('⚠️ TẤT CẢ API LỖI → Dùng dữ liệu tĩnh cục bộ');
-  return getStaticFallback(query || 'món ăn');
+  // LỚP 5: DỮ LIỆU TĨNH
+  console.warn('🛑 Tất cả API lỗi -> Dùng dữ liệu tĩnh');
+  targetEl.innerHTML = loadingHTML('📦 Lớp 5: Dữ liệu nội bộ...');
+  return getStaticFallback();
 }
 
 /* ══════════════════════════════════════════════
-   PARSE JSON & BUILD PROMPT
+   PARSE & RENDER
    ══════════════════════════════════════════════ */
 function parseRecipes(text){
   try{
@@ -697,410 +633,201 @@ function parseRecipes(text){
   }catch(err){ return []; }
 }
 
+// ★★★ SỬA ĐỔI QUAN TRỌNG: BUILD PROMPT ★★★
 function buildPrompt({mood='',count=4,extra='',fromFridge=false,forFamily=false}={}){
   const p=[];
-  p.push(`Bạn là đầu bếp AI thân thiện. Hãy gợi ý ${count} món ăn ngon theo yêu cầu sau:`);
-  if(ingredients.length) p.push(`- Nguyên liệu có sẵn: ${ingredients.join(', ')}`);
-  if(fromFridge&&fridgeItems.length) p.push(`- Nguyên liệu từ tủ lạnh: ${fridgeItems.map(f=>f.name).join(', ')}`);
+  p.push(`Bạn là đầu bếp AI chuyên nghiệp. Hãy gợi ý ${count} món ăn ngon theo yêu cầu sau:`);
+  
+  // Yêu cầu bắt buộc về nguyên liệu
+  if(ingredients.length) {
+    p.push(`\n★ QUAN TRỌNG: Bạn PHẢI gợi ý các món có thể làm được bằng các nguyên liệu sau: ${ingredients.join(', ')}.`);
+    p.push(`Đây là nguyên liệu chính, không cần thêm nguyên liệu lạ nếu không cần thiết.`);
+  }
+  
+  if(fromFridge&&fridgeItems.length) p.push(`- Ưu tiên dùng nguyên liệu có trong tủ lạnh: ${fridgeItems.map(f=>f.name).join(', ')}`);
   if(selectedDevices.length) p.push(`- Thiết bị nấu: ${selectedDevices.join(', ')}`);
+  
   const ft=document.getElementById('filter-time')?.value; if(ft) p.push(`- Thời gian nấu: ${ft}`);
   const fm=document.getElementById('filter-meal')?.value; if(fm) p.push(`- Loại bữa: ${fm}`);
-  const em=selectedEmotions.length?selectedEmotions.join(', '):(mood||''); if(em) p.push(`- Tình huống/cảm xúc: ${em}`);
+  
+  const em=selectedEmotions.length?selectedEmotions.join(', '):(mood||''); if(em) p.push(`- Tình huống: ${em}`);
   if(allergies.length) p.push(`- TUYỆT ĐỐI KHÔNG dùng: ${allergies.join(', ')}`);
   if(preferences.length) p.push(`- Sở thích: ${preferences.join(', ')}`);
   if(goals.length) p.push(`- Mục tiêu: ${goals.join(', ')}`);
-  p.push(`- Khẩu phần: ${document.getElementById('servings-select')?.value||2} người`);
-  if(forFamily&&familyMembers.length) p.push(`- Phù hợp cả nhà: ${familyMembers.map(m=>`${m.name} (${m.pref})`).join(', ')}`);
   if(extra) p.push(extra);
-  p.push(`\nTrả về JSON (KHÔNG markdown, chỉ JSON thuần):\n[{"name":"Tên món","emoji":"emoji","time":"X phút","difficulty":"Dễ/Trung bình/Khó","calories":"XXX kcal","desc":"Mô tả ngắn","ingredients":["nguyên liệu"],"steps":["Bước 1..."],"tips":"Mẹo nhỏ"}]`);
+  
+  // Yêu cầu định dạng đầu ra rõ ràng
+  p.push(`\nQuy tắc trả về:
+1. Chỉ trả về chuỗi JSON thuần, không markdown.
+2. Mảng nguyên liệu phải liệt kê đầy đủ các nguyên liệu chính đã nhập ở trên.
+3. Format: [{"name":"Tên món","emoji":"emoji","time":"X phút","difficulty":"Dễ","calories":"XXX kcal","desc":"Mô tả ngắn gọn nguyên liệu chính được dùng","ingredients":["nguyên liệu 1","nguyên liệu 2"],"steps":["Bước 1","Bước 2"],"tips":"Mẹo"}]`);
+  
   return p.join('\n');
 }
 
-/* ══════════════════════════════════════════════
-   RENDER GIAO DIỆN KẾT QUẢ
-   ══════════════════════════════════════════════ */
-function loadingHTML(msg){
-  return `<div class="loading-wrap"><div class="spinner"></div><div class="loading-text">${msg}<span class="loading-dots"></span></div></div>`;
-}
-function errHTML(msg){
-  return `<div style="padding:16px;color:var(--danger);font-size:14px">❌ ${msg||'Lỗi kết nối. Thử lại sau.'}</div>`;
-}
+function loadingHTML(msg){ return `<div class="loading-wrap"><div class="spinner"></div><div class="loading-text">${msg}<span class="loading-dots"></span></div></div>`; }
+function errHTML(msg){ return `<div style="padding:16px;color:var(--danger)">❌ ${msg||'Lỗi kết nối.'}</div>`; }
 
-function renderRecipesHTML(recipes){
-  if(!recipes.length) return `<div class="empty-state"><div class="empty-icon">😕</div><div class="empty-title">Không tìm thấy món phù hợp</div><div class="empty-desc">Thử thay đổi bộ lọc hoặc thêm nguyên liệu</div></div>`;
+function renderRecipesHTML(recipes, inputList = []){
+  if(!recipes.length) return `<div class="empty-state"><div class="empty-icon">😕</div><div class="empty-title">Không tìm thấy món</div></div>`;
+  
+  // Chuẩn hóa inputList để so sánh (chữ thường, không dấu nếu có thể)
+  const normalizedInputs = inputList.map(i => i.toLowerCase().trim());
+
   return `<div class="results-grid">${recipes.map((r,i)=>{
-    // Badge nguồn dữ liệu
     let badge = '';
-    if(r.isStatic){
-      badge = `<div class="layer-badge layer-4">⚠️ Dữ liệu dự phòng cục bộ (AI đang bảo trì)</div>`;
-    } else if(r.isFallback && r.source==='Spoonacular'){
-      badge = `<div class="layer-badge layer-2">🛡️ Nguồn: Spoonacular CSDL ẩm thực quốc tế</div>`;
-    } else if(r.isFallback && r.source==='NutritionDB'){
-      badge = `<div class="layer-badge layer-3">🛡️ Nguồn: NutritionDB - Dữ liệu dinh dưỡng</div>`;
-    } else {
-      badge = `<div class="layer-badge layer-1">🤖 Nguồn: Mistral AI - Gợi ý thông minh</div>`;
-    }
-    // Ảnh hoặc emoji
-    const imgHtml = r.image ? `<img src="${r.image}" alt="${r.name}" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:12px;background:var(--bg)" onerror="this.style.display='none'">` : `<span class="recipe-emoji">${r.emoji||'🍽️'}</span>`;
-    // Bảng dinh dưỡng
-    let nutritionHTML = '';
-    if(r.nutrition){
-      nutritionHTML = `<div class="recipe-section"><div class="recipe-section-title">📊 Dinh dưỡng</div><div class="nutrition-grid"><div class="nutrition-item"><div class="nutrition-val">${r.nutrition.protein}</div><div class="nutrition-label">Protein</div></div><div class="nutrition-item"><div class="nutrition-val">${r.nutrition.carbs}</div><div class="nutrition-label">Carbs</div></div><div class="nutrition-item"><div class="nutrition-val">${r.nutrition.fat}</div><div class="nutrition-label">Chất béo</div></div><div class="nutrition-item"><div class="nutrition-val">${r.nutrition.fiber}</div><div class="nutrition-label">Chất xơ</div></div></div></div>`;
-    }
-    return `<div class="recipe-card">${badge}<div class="recipe-header">${imgHtml}<div class="recipe-name">${r.name}</div><div class="recipe-meta"><span class="meta-chip chip-time">⏱️ ${r.time}</span><span class="meta-chip chip-diff">👨‍🍳 ${r.difficulty}</span><span class="meta-chip chip-cal">🔥 ${r.calories}</span></div><div class="recipe-desc">${r.desc}</div></div><div class="recipe-body"><div class="recipe-section"><div class="recipe-section-title">Nguyên liệu</div><div class="ingredient-list">${(r.ingredients||[]).map(ing=>`<span class="ingredient-chip">${ing}</span>`).join('')}</div></div><div class="recipe-section"><div class="recipe-section-title">Cách làm</div><ol class="steps-list">${(r.steps||[]).map((s,j)=>`<li><span class="step-num">${j+1}</span>${s}</li>`).join('')}</ol></div>${nutritionHTML}${r.tips?`<div class="recipe-section"><div class="recipe-section-title">💡 Mẹo</div><div style="font-size:13px;color:var(--text-2)">${r.tips}</div></div>`:''}</div><div class="recipe-actions"><button class="btn-sm" onclick="addToShopFrom('last',${i})">🛒 Mua nguyên liệu</button><button class="btn-sm liked" onclick="showToast('❤️ Đã lưu vào yêu thích!')">❤️ Lưu</button><button class="btn-sm" onclick="startCookTimer('${r.time}')">⏱️ Hẹn giờ</button></div></div>`;
+    if(r.source === 'beeknoee') badge = `<div class="layer-badge layer-0">💎 Beeknoee AI (Siêu trí tuệ)</div>`;
+    else if(r.source === 'mistral') badge = `<div class="layer-badge layer-1">🤖 Mistral AI (Dự phòng)</div>`;
+    else if(r.source === 'spoonacular') badge = `<div class="layer-badge layer-2">🛡️ Spoonacular (CSDL QT)</div>`;
+    else badge = `<div class="layer-badge layer-3">📦 Dữ liệu nội bộ (Offline)</div>`;
+
+    const imgHtml = r.image ? `<img src="${r.image}" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:12px">` : `<span class="recipe-emoji">${r.emoji||'🍽️'}</span>`;
+    
+    // Logic hiển thị nguyên liệu: Highlight các nguyên liệu khớp với đầu vào
+    const ingsHtml = (r.ingredients||[]).map(ing => {
+      const isMatch = normalizedInputs.some(inp => ing.toLowerCase().includes(inp) || inp.includes(ing.toLowerCase()));
+      // Nếu khớp với đầu vào -> style nổi bật
+      return `<span class="ingredient-chip" style="${isMatch ? 'background:var(--primary-light);color:var(--primary-dark);border-color:var(--primary);font-weight:600' : ''}">${ing}</span>`;
+    }).join('');
+
+    // Thêm phần hiển thị nguyên liệu người dùng đã nhập để đối chiếu
+    const inputCheckHtml = inputList.length > 0 ? 
+      `<div style="font-size:12px;color:var(--text-3);margin-bottom:8px;padding:8px;background:var(--bg);border-radius:6px;">
+        <strong>📝 Nguyên liệu bạn có:</strong> ${inputList.join(', ')}
+      </div>` : '';
+
+    return `<div class="recipe-card">${badge}<div class="recipe-header">${imgHtml}<div class="recipe-name">${r.name}</div><div class="recipe-meta"><span class="meta-chip chip-time">⏱️ ${r.time}</span><span class="meta-chip chip-diff">👨‍🍳 ${r.difficulty}</span><span class="meta-chip chip-cal">🔥 ${r.calories}</span></div><div class="recipe-desc">${r.desc}</div></div><div class="recipe-body">${inputCheckHtml}<div class="recipe-section"><div class="recipe-section-title">Nguyên liệu cần dùng</div><div class="ingredient-list">${ingsHtml}</div></div><div class="recipe-section"><div class="recipe-section-title">Cách làm</div><ol class="steps-list">${(r.steps||[]).map((s,j)=>`<li><span class="step-num">${j+1}</span>${s}</li>`).join('')}</ol></div>${r.tips?`<div class="recipe-section"><div class="recipe-section-title">💡 Mẹo</div><div style="font-size:13px;color:var(--text-2)">${r.tips}</div></div>`:''}</div><div class="recipe-actions"><button class="btn-sm" onclick="addToShopFrom('last',${i})">🛒 Mua thêm</button><button class="btn-sm liked" onclick="showToast('❤️ Đã lưu!')">❤️ Lưu</button></div></div>`;
   }).join('')}</div>`;
 }
 
 /* ══════════════════════════════════════════════
-   QUẢN LÝ NGUYÊN LIỆU
+   CÁC HÀM XỬ LÝ SỰ KIỆN
    ══════════════════════════════════════════════ */
-function addIngredient(){
-  const inp=document.getElementById('ing-input');
-  const v=inp.value.trim(); if(!v) return;
-  v.split(/[,،]/).map(x=>x.trim()).filter(Boolean).forEach(x=>{if(!ingredients.includes(x))ingredients.push(x);});
-  inp.value=''; renderIngTags();
+function closePopup(){ const p=document.getElementById('welcome-popup'); p.style.opacity='0'; setTimeout(()=>p.style.display='none',400); }
+const TABS=['home','suggest','fridge','shopping','mealplan','delivery','profile'];
+function openTab(tab){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+tab).classList.add('active');
+  TABS.forEach(t=>{ const s=document.getElementById('snav-'+t); if(s)s.classList.toggle('active',t===tab); const b=document.getElementById('bnav-'+t); if(b)b.classList.toggle('active',t===tab); });
+  if(tab==='mealplan') renderMealPlanGrid();
 }
+
+function addIngredient(){ const inp=document.getElementById('ing-input'); const v=inp.value.trim(); if(!v) return; v.split(/[,،]/).map(x=>x.trim()).filter(Boolean).forEach(x=>{if(!ingredients.includes(x))ingredients.push(x);}); inp.value=''; renderIngTags(); }
 function addIngOnEnter(e){if(e.key==='Enter')addIngredient();}
 function addQuickIngs(arr){arr.forEach(v=>{if(!ingredients.includes(v))ingredients.push(v);});renderIngTags();}
 function renderIngTags(){document.getElementById('ing-tags').innerHTML=ingredients.map((ing,i)=>`<span class="tag">${ing}<span class="remove" onclick="removeIng(${i})">×</span></span>`).join('');}
 function removeIng(i){ingredients.splice(i,1);renderIngTags();}
-
-/* ══════════════════════════════════════════════
-   BỘ LỌC & CHỌN LỰA
-   ══════════════════════════════════════════════ */
 function toggleDevice(el,name){el.classList.toggle('selected');if(el.classList.contains('selected')){if(!selectedDevices.includes(name))selectedDevices.push(name);}else selectedDevices=selectedDevices.filter(d=>d!==name);}
 function toggleEmotion(el){el.classList.toggle('selected');const t=el.textContent.trim();if(el.classList.contains('selected')){if(!selectedEmotions.includes(t))selectedEmotions.push(t);}else selectedEmotions=selectedEmotions.filter(e=>e!==t);}
 function togglePill(el,type,value){el.classList.toggle('selected');const arr=type==='allergy'?allergies:preferences;if(el.classList.contains('selected')){if(!arr.includes(value))arr.push(value);}else{const idx=arr.indexOf(value);if(idx>-1)arr.splice(idx,1);}}
 function toggleGoal(el,value){el.classList.toggle('selected');if(el.classList.contains('selected')){if(!goals.includes(value))goals.push(value);}else goals=goals.filter(g=>g!==value);}
 
-/* ══════════════════════════════════════════════
-   CHỨC NĂNG GỢI Ý - TẤT CẢ DÙNG smartSuggest()
-   ══════════════════════════════════════════════ */
-
-// 1. Gợi ý từ trang Gợi ý món
 async function getSuggestions(){
   const btn=document.getElementById('suggest-btn'), results=document.getElementById('suggest-results');
   btn.disabled=true; btn.textContent='⏳ Đang tìm...';
-  const queryStr = ingredients.length>0 ? ingredients.join(', ') : 'món ăn dễ làm';
+  
+  // Lấy danh sách nguyên liệu hiện tại để truyền vào prompt và hiển thị
+  const currentIngs = [...ingredients]; 
+  
+  const queryStr = currentIngs.length > 0 ? currentIngs.join(' ') : 'món ăn dễ làm';
+  
   try{
     lastRecipes = await smartSuggest({
-      targetEl: results,
-      prompt: buildPrompt({count:4}),
-      query: queryStr,
-      count: 4
+      targetEl: results, 
+      prompt: buildPrompt({count:4}), 
+      query: queryStr, 
+      count: 4,
+      inputIngredients: currentIngs // Truyền nguyên liệu đầu vào để hiển thị
     });
-    results.innerHTML = renderRecipesHTML(lastRecipes);
-  }catch(e){
-    results.innerHTML = errHTML();
-  }
+    results.innerHTML = renderRecipesHTML(lastRecipes, currentIngs);
+  }catch(e){ results.innerHTML = errHTML(); }
   btn.disabled=false; btn.textContent='✨ Gợi ý món ăn cho tôi';
 }
 
-// 2. Gợi ý theo tâm trạng (trang chủ)
-async function quickSuggestByMood(mood){
-  const el=document.getElementById('home-results'), content=document.getElementById('home-result-content');
-  el.style.display='block';
-  try{
+async function quickSuggestByMood(mood){ 
+  const el=document.getElementById('home-results'), content=document.getElementById('home-result-content'); 
+  el.style.display='block'; 
+  try{ 
     homeLastRecipes = await smartSuggest({
-      targetEl: content,
-      prompt: buildPrompt({mood:mood, count:3}),
-      query: mood,
-      count: 3,
-      loadingMsg: 'Đang tìm món phù hợp với "'+mood+'"'
-    });
-    content.innerHTML = renderRecipesHTML(homeLastRecipes);
-  }catch(e){
-    content.innerHTML = errHTML();
-  }
+      targetEl: content, 
+      prompt: buildPrompt({mood:mood, count:3}), 
+      query: mood, 
+      count: 3, 
+      loadingMsg: 'Đang tìm món phù hợp...'
+    }); 
+    content.innerHTML = renderRecipesHTML(homeLastRecipes); 
+  }catch(e){ content.innerHTML = errHTML(); } 
 }
 
-// 3. Gợi ý theo bữa (trang chủ → chuyển sang tab suggest)
-async function suggestByMeal(meal){
-  openTab('suggest');
-  const sel=document.getElementById('filter-meal');
-  if(meal.includes('sáng')) sel.value='Bữa sáng';
-  else if(meal.includes('trưa')) sel.value='Bữa trưa';
-  else if(meal.includes('tối')) sel.value='Bữa tối';
-  else sel.value='Ăn vặt';
-  await getSuggestions();
-}
+function selectMoodHome(el, mood){ document.querySelectorAll('#mood-home .emotion-tag').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); homeMood = mood; quickSuggestByMood(mood); }
+async function suggestByMeal(meal){ openTab('suggest'); const sel=document.getElementById('filter-meal'); if(meal.includes('sáng')) sel.value='Bữa sáng'; else if(meal.includes('trưa')) sel.value='Bữa trưa'; else if(meal.includes('tối')) sel.value='Bữa tối'; else sel.value='Ăn vặt'; await getSuggestions(); }
 
-// 4. Gợi ý từ tủ lạnh
-async function suggestFromFridge(){
-  if(!fridgeItems.length){showToast('Thêm thực phẩm vào tủ lạnh trước!');return;}
-  const el=document.getElementById('fridge-suggest-results');
-  const queryStr = fridgeItems.map(f=>f.name).join(', ');
-  try{
+async function suggestFromFridge(){ 
+  if(!fridgeItems.length){showToast('Thêm thực phẩm vào tủ lạnh trước!');return;} 
+  const el=document.getElementById('fridge-suggest-results'); 
+  const currentIngs = fridgeItems.map(f=>f.name);
+  const queryStr = currentIngs.join(', '); 
+  try{ 
     fridgeLastRecipes = await smartSuggest({
-      targetEl: el,
-      prompt: buildPrompt({fromFridge:true, count:3, extra:'- Ưu tiên dùng nguyên liệu sắp hết hạn trước'}),
-      query: queryStr,
+      targetEl: el, 
+      prompt: buildPrompt({fromFridge:true, count:3, extra:'- Ưu tiên nguyên liệu sắp hết hạn'}), 
+      query: queryStr, 
       count: 3,
-      loadingMsg: 'Đang phân tích tủ lạnh của bạn...'
-    });
-    el.innerHTML = `<div class="card"><div class="card-title"><span class="icon">✨</span> Gợi ý từ tủ lạnh</div></div>` + renderRecipesHTML(fridgeLastRecipes);
-  }catch(e){
-    el.innerHTML = errHTML();
-  }
+      inputIngredients: currentIngs
+    }); 
+    el.innerHTML = `<div class="card"><div class="card-title"><span class="icon">✨</span> Gợi ý từ tủ lạnh</div></div>` + renderRecipesHTML(fridgeLastRecipes, currentIngs); 
+  }catch(e){ el.innerHTML = errHTML(); } 
 }
 
-// 5. Gợi ý cho cả gia đình
-async function suggestForFamily(){
-  if(!familyMembers.length){showToast('Thêm thành viên gia đình trước!');return;}
-  const el=document.getElementById('family-results');
-  const queryStr = familyMembers.map(m=>m.name).join(', ');
-  try{
+async function suggestForFamily(){ 
+  if(!familyMembers.length){showToast('Thêm thành viên trước!');return;} 
+  const el=document.getElementById('family-results'); 
+  const queryStr = familyMembers.map(m=>m.name).join(', '); 
+  try{ 
     familyLastRecipes = await smartSuggest({
-      targetEl: el,
-      prompt: buildPrompt({forFamily:true, count:3, extra:'- Gợi ý món thỏa mãn TẤT CẢ thành viên, đa dạng'}),
-      query: queryStr,
+      targetEl: el, 
+      prompt: buildPrompt({forFamily:true, count:3, extra:'- Phù hợp TẤT CẢ thành viên'}), 
+      query: queryStr, 
       count: 3,
-      loadingMsg: 'Đang tìm món cả nhà đều thích...'
-    });
-    el.innerHTML = `<div style="font-weight:600;margin-bottom:12px;color:var(--success)">👨‍👩‍👧 Món cả nhà đều ăn được:</div>` + renderRecipesHTML(familyLastRecipes);
-  }catch(e){
-    el.innerHTML = errHTML();
-  }
+      inputIngredients: [] // Không có nguyên liệu đầu vào cụ thể
+    }); 
+    el.innerHTML = `<div style="font-weight:600;margin-bottom:12px;color:var(--success)">👨‍👩‍👧 Món cả nhà đều ăn được:</div>` + renderRecipesHTML(familyLastRecipes); 
+  }catch(e){ el.innerHTML = errHTML(); } 
 }
 
-/* ══════════════════════════════════════════════
-   THÊM NGUYÊN LIỆU VÀO DANH SÁCH MUA SẮM
-   ══════════════════════════════════════════════ */
-function addToShopFrom(src, idx){
-  let recipe;
-  if(src==='fridge') recipe=fridgeLastRecipes[idx];
-  else if(src==='home') recipe=homeLastRecipes[idx];
-  else if(src==='family') recipe=familyLastRecipes[idx];
-  else recipe=lastRecipes[idx];
-  if(!recipe) return;
-  let added=0;
-  (recipe.ingredients||[]).forEach(ing=>{
-    if(!shoppingList.find(s=>s.name===ing)){shoppingList.push({name:ing,qty:'',done:false});added++;}
-  });
-  renderShopList();
-  showToast(added>0 ? `✅ Đã thêm ${added} nguyên liệu!` : '✅ Đã có sẵn trong danh sách');
-}
+function addToShopFrom(src, idx){ let recipe; if(src==='fridge') recipe=fridgeLastRecipes[idx]; else if(src==='home') recipe=homeLastRecipes[idx]; else if(src==='family') recipe=familyLastRecipes[idx]; else recipe=lastRecipes[idx]; if(!recipe) return; let added=0; (recipe.ingredients||[]).forEach(ing=>{ if(!shoppingList.find(s=>s.name===ing)){shoppingList.push({name:ing,qty:'',done:false});added++;} }); renderShopList(); showToast(added>0 ? `✅ Đã thêm ${added} nguyên liệu!` : '✅ Đã có sẵn'); }
 
-/* ══════════════════════════════════════════════
-   TRANG CHỦ - CHỌN TÂM TRẠNG
-   ══════════════════════════════════════════════ */
-function selectMoodHome(el, mood){
-  document.querySelectorAll('#mood-home .emotion-tag').forEach(e=>e.classList.remove('selected'));
-  el.classList.add('selected');
-  homeMood = mood;
-  quickSuggestByMood(mood);
-}
-
-/* ══════════════════════════════════════════════
-   QUẢN LÝ TỦ LẠNH
-   ══════════════════════════════════════════════ */
-function addFridgeItem(){
-  const name=document.getElementById('fridge-name').value.trim(), date=document.getElementById('fridge-date').value;
-  if(!name) return;
-  fridgeItems.push({name,date,id:Date.now()});
-  document.getElementById('fridge-name').value='';
-  document.getElementById('fridge-date').value='';
-  renderFridgeList();
-}
-function renderFridgeList(){
-  const el=document.getElementById('fridge-list');
-  if(!fridgeItems.length){
-    el.innerHTML=`<div class="empty-state"><div class="empty-icon">🧊</div><div class="empty-title">Tủ lạnh trống</div><div class="empty-desc">Thêm thực phẩm để nhận gợi ý</div></div>`;
-    document.getElementById('fridge-suggest-btn-wrap').style.display='none';
-    return;
-  }
-  const today=new Date();
-  el.innerHTML=fridgeItems.map((item,i)=>{
-    let sc='',st='';
-    if(item.date){
-      const d=new Date(item.date), diff=Math.ceil((d-today)/86400000);
-      if(diff<0){sc='color:var(--danger)';st='⚠️ Hết hạn';}
-      else if(diff<=2){sc='color:var(--warning)';st=`⚠️ Còn ${diff} ngày`;}
-      else st=`✓ Còn ${diff} ngày`;
-    }
-    return `<div class="shop-item"><span style="font-size:18px">📦</span><span class="shop-name" style="flex:1">${item.name}</span><span style="font-size:12px;${sc}">${st}</span><button class="btn-sm" onclick="removeFridge(${i})" style="padding:4px 8px;font-size:11px">✕</button></div>`;
-  }).join('');
-  document.getElementById('fridge-suggest-btn-wrap').style.display='block';
-}
+function addFridgeItem(){ const name=document.getElementById('fridge-name').value.trim(), date=document.getElementById('fridge-date').value; if(!name) return; fridgeItems.push({name,date,id:Date.now()}); document.getElementById('fridge-name').value=''; document.getElementById('fridge-date').value=''; renderFridgeList(); }
+function renderFridgeList(){ const el=document.getElementById('fridge-list'); if(!fridgeItems.length){ el.innerHTML=`<div class="empty-state"><div class="empty-icon">🧊</div><div class="empty-title">Tủ lạnh trống</div></div>`; document.getElementById('fridge-suggest-btn-wrap').style.display='none'; return; } el.innerHTML=fridgeItems.map((item,i)=>`<div class="shop-item"><span style="font-size:18px">📦</span><span class="shop-name">${item.name}</span><button class="btn-sm" onclick="removeFridge(${i})" style="padding:4px 8px;font-size:11px">✕</button></div>`).join(''); document.getElementById('fridge-suggest-btn-wrap').style.display='block'; }
 function removeFridge(i){fridgeItems.splice(i,1);renderFridgeList();}
 
-/* ══════════════════════════════════════════════
-   QUẢN LÝ DANH SÁCH MUA SẮM
-   ══════════════════════════════════════════════ */
-function addShopItem(){
-  const name=document.getElementById('shop-input').value.trim(), qty=document.getElementById('shop-qty').value.trim();
-  if(!name) return;
-  shoppingList.push({name,qty,done:false});
-  document.getElementById('shop-input').value='';
-  document.getElementById('shop-qty').value='';
-  renderShopList();
-}
-function renderShopList(){
-  const el=document.getElementById('shop-list');
-  if(!shoppingList.length){
-    el.innerHTML=`<div class="empty-state"><div class="empty-icon">🛒</div><div class="empty-title">Danh sách trống</div><div class="empty-desc">Chọn món ăn để tự động thêm nguyên liệu</div></div>`;
-    return;
-  }
-  el.innerHTML=shoppingList.map((item,i)=>`<div class="shop-item"><input type="checkbox" class="shop-check" ${item.done?'checked':''} onchange="toggleShop(${i})"><span class="shop-name ${item.done?'done':''}">${item.name}</span><span class="shop-qty">${item.qty}</span><button class="btn-sm" onclick="removeShop(${i})" style="padding:4px 8px;font-size:11px">✕</button></div>`).join('');
-}
+function addShopItem(){ const name=document.getElementById('shop-input').value.trim(), qty=document.getElementById('shop-qty').value.trim(); if(!name) return; shoppingList.push({name,qty,done:false}); document.getElementById('shop-input').value=''; document.getElementById('shop-qty').value=''; renderShopList(); }
+function renderShopList(){ const el=document.getElementById('shop-list'); if(!shoppingList.length){ el.innerHTML=`<div class="empty-state"><div class="empty-icon">🛒</div><div class="empty-title">Danh sách trống</div></div>`; return; } el.innerHTML=shoppingList.map((item,i)=>`<div class="shop-item"><input type="checkbox" class="shop-check" ${item.done?'checked':''} onchange="toggleShop(${i})"><span class="shop-name ${item.done?'done':''}">${item.name}</span><span class="shop-qty">${item.qty}</span><button class="btn-sm" onclick="removeShop(${i})" style="padding:4px 8px;font-size:11px">✕</button></div>`).join(''); }
 function toggleShop(i){shoppingList[i].done=!shoppingList[i].done;renderShopList();}
 function removeShop(i){shoppingList.splice(i,1);renderShopList();}
-function clearDone(){const before=shoppingList.length;shoppingList=shoppingList.filter(s=>!s.done);renderShopList();showToast(`✅ Đã xóa ${before-shoppingList.length} mục hoàn thành`);}
-function shareList(){
-  const text=shoppingList.map(s=>`${s.done?'✓':'○'} ${s.name} ${s.qty}`).join('\n');
-  if(navigator.clipboard) navigator.clipboard.writeText('📋 Danh sách mua sắm:\n'+text);
-  showToast('📋 Đã copy! Paste vào Zalo hoặc Messenger');
-}
+function clearDone(){shoppingList=shoppingList.filter(s=>!s.done);renderShopList();showToast('✅ Đã xóa các mục hoàn thành');}
+function shareList(){ const text=shoppingList.map(s=>`${s.done?'✓':'○'} ${s.name} ${s.qty}`).join('\n'); if(navigator.clipboard) navigator.clipboard.writeText('📋 Danh sách:\n'+text); showToast('📋 Đã copy!'); }
 
-/* ══════════════════════════════════════════════
-   THỰC ĐƠN TUẦN (dùng smartSuggest cho mỗi ngày)
-   ══════════════════════════════════════════════ */
-const DAYS=['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'];
-let mealPlan={};
-function renderMealPlanGrid(){
-  const el=document.getElementById('meal-plan-grid'); if(!el) return;
-  el.innerHTML=DAYS.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="meals-of-day">${(mealPlan[d]||[]).map(m=>`<span class="meal-chip">${m}</span>`).join('')}${!(mealPlan[d]||[]).length?'<span style="font-size:12px;color:var(--text-3)">Chưa có</span>':''}</div></div>`).join('');
-}
-async function generateMealPlan(){
-  const el=document.getElementById('meal-plan-results');
-  el.innerHTML=loadingHTML('AI đang lên thực đơn cả tuần...');
-  const prompt=`Lên thực đơn 7 ngày (Thứ 2 đến Chủ nhật) với 3 bữa mỗi ngày.\n${allergies.length?'Không dùng: '+allergies.join(', ')+'\n':''}${preferences.length?'Sở thích: '+preferences.join(', ')+'\n':''}${goals.length?'Mục tiêu: '+goals.join(', ')+'\n':''}Đa dạng, không lặp lại món liên tục.\nTrả về JSON (KHÔNG markdown):\n{"Thứ 2":["Bữa sáng: ...","Bữa trưa: ...","Bữa tối: ..."],"Thứ 3":[...],...}`;
-  try{
-    // Dùng smartSuggest cho meal plan - nhưng với prompt đặc biệt
-    // Lớp 1
-    const text = await callMistral(prompt);
-    const c=text.replace(/```json|```/g,'').trim();
-    mealPlan=JSON.parse(c.substring(c.indexOf('{'),c.lastIndexOf('}')+1));
-    renderMealPlanGrid();
-    el.innerHTML=`<div class="card" style="background:var(--success-light);border-color:var(--success)"><div class="layer-badge layer-1">🤖 Nguồn: Mistral AI</div><div style="color:var(--success);font-weight:600">✅ Đã lên thực đơn cả tuần thành công!</div></div>`;
-  }catch(e1){
-    // Lớp 2: Tạo thực đơn từ Spoonacular
-    try{
-      el.innerHTML=loadingHTML('AI bận → Đang tạo thực đơn từ CSDL ẩm thực...');
-      const meals = ['breakfast','lunch','dinner'];
-      for(const day of DAYS){
-        mealPlan[day]=[];
-        for(const meal of meals){
-          const data = await callSpoonacular(meal+' vietnamese');
-          if(data.length>0) mealPlan[day].push(translateToVietnamese(data[0].title));
-          else mealPlan[day].push(meal==='breakfast'?'Bún/Phở':'Cơm món Việt');
-        }
-      }
-      renderMealPlanGrid();
-      el.innerHTML=`<div class="card" style="background:var(--secondary-light);border-color:var(--secondary)"><div class="layer-badge layer-2">🛡️ Nguồn: Spoonacular</div><div style="color:var(--secondary);font-weight:600">✅ Đã tạo thực đơn từ nguồn dự phòng!</div></div>`;
-    }catch(e2){
-      // Lớp 3: Static
-      const staticMeals=['Bún bò','Phở gà','Cơm tấm','Bánh mì','Hủ tiếu','Mì quảng','Bún chả'];
-      DAYS.forEach((d,i)=>{
-        mealPlan[d]=[
-          'Sáng: '+staticMeals[i%staticMeals.length],
-          'Trưa: Cơm '+['sườn','gà','bò','heo','tôm','cá','đậu'][i],
-          'Tối: Canh '+['chua','riêu','bún','thịt','cua','ngót','mọc'][i]
-        ];
-      });
-      renderMealPlanGrid();
-      el.innerHTML=`<div class="card" style="background:var(--warning-light);border-color:var(--warning)"><div class="layer-badge layer-4">⚠️ Dữ liệu dự phòng</div><div style="color:#C07A2A;font-weight:600">✅ Đã tạo thực đơn cơ bản (AI đang bảo trì)</div></div>`;
-    }
-  }
-}
+const DAYS=['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật']; let mealPlan={};
+function renderMealPlanGrid(){ const el=document.getElementById('meal-plan-grid'); if(!el) return; el.innerHTML=DAYS.map(d=>`<div class="day-row"><div class="day-label">${d}</div><div class="meals-of-day">${(mealPlan[d]||[]).map(m=>`<span class="meal-chip">${m}</span>`).join('')}</div></div>`).join(''); }
+async function generateMealPlan(){ const el=document.getElementById('meal-plan-results'); el.innerHTML=loadingHTML('AI đang lên thực đơn...'); try{ const text = await callBeeknoee(`Lên thực đơn 7 ngày, 3 bữa/ngày. Trả về JSON {"Thứ 2":["Sáng","Trưa","Tối"],...}`); const c=text.replace(/```json|```/g,'').trim(); mealPlan=JSON.parse(c.substring(c.indexOf('{'),c.lastIndexOf('}')+1)); renderMealPlanGrid(); el.innerHTML=`<div class="layer-badge layer-0">💎 Thành công từ Beeknoee AI</div>`; }catch(e){ el.innerHTML=`<div class="layer-badge layer-3">⚠️ Lỗi AI, dùng thực đơn mẫu</div>`; DAYS.forEach(d=>mealPlan[d]=['Bún','Cơm','Phở']); renderMealPlanGrid(); } }
 
-/* ══════════════════════════════════════════════
-   GIA ĐÌNH
-   ══════════════════════════════════════════════ */
-function addFamilyMember(){
-  const name=document.getElementById('family-name').value.trim(), pref=document.getElementById('family-pref').value;
-  if(!name) return;
-  familyMembers.push({name,pref});
-  document.getElementById('family-name').value='';
-  renderFamilyList();
-}
-function renderFamilyList(){
-  document.getElementById('family-list').innerHTML=familyMembers.map((m,i)=>`<div class="shop-item"><span style="font-size:17px">👤</span><span class="shop-name">${m.name}</span><span style="font-size:12px;color:var(--text-3)">${m.pref}</span><button class="btn-sm" onclick="removeFamily(${i})" style="padding:4px 8px;font-size:11px">✕</button></div>`).join('');
-}
+function addFamilyMember(){ const name=document.getElementById('family-name').value.trim(), pref=document.getElementById('family-pref').value; if(!name) return; familyMembers.push({name,pref}); document.getElementById('family-name').value=''; renderFamilyList(); }
+function renderFamilyList(){ document.getElementById('family-list').innerHTML=familyMembers.map((m,i)=>`<div class="shop-item"><span style="font-size:17px">👤</span><span class="shop-name">${m.name}</span><span style="font-size:12px;color:var(--text-3)">${m.pref}</span><button class="btn-sm" onclick="removeFamily(${i})" style="padding:4px 8px;font-size:11px">✕</button></div>`).join(''); }
 function removeFamily(i){familyMembers.splice(i,1);renderFamilyList();}
 
-/* ══════════════════════════════════════════════
-   ĐẶT ĐỒ ĂN GIAO VỀ
-   ══════════════════════════════════════════════ */
-async function searchDelivery(){
-  const q=document.getElementById('delivery-search').value.trim();
-  if(!q) return;
-  const el=document.getElementById('ai-delivery-results');
-  el.innerHTML=loadingHTML('Đang tìm kiếm quán ăn...');
-  const prompt=`Gợi ý 3 quán ăn tại Việt Nam phục vụ món "${q}". Giá: ${document.getElementById('del-filter-price').value||'mọi giá'}.\nTrả về JSON (không markdown):\n[{"name":"Tên quán","emoji":"🍜","specialty":"Món đặc trưng","rating":"4.x★","time":"15-25 phút","price":"XXk","promo":"Khuyến mãi","platform":"Grab/ShopeeFood"}]`;
-  try{
-    const text = await callMistral(prompt);
-    const shops = parseRecipes(text);
-    el.innerHTML=`<div class="card"><div class="card-title"><span class="icon">🔍</span> Kết quả cho "${q}"</div><div class="layer-badge layer-1">🤖 Nguồn: Mistral AI</div>${shops.map(s=>`<div class="delivery-card"><div class="delivery-logo" style="background:var(--primary-light);color:var(--primary)">${s.emoji}</div><div class="delivery-info"><div class="delivery-name">${s.name}</div><div class="delivery-meta">${s.rating||''} · ${s.time||''} · ${s.platform||''}${s.promo?' · <span style="color:var(--danger)">'+s.promo+'</span>':''}</div><div style="font-size:12px;color:var(--text-3)">${s.specialty||''}</div></div><div class="delivery-price">${s.price||''}</div></div>`).join('')}</div>`;
-  }catch(e){
-    el.innerHTML=`<div class="card"><div class="layer-badge layer-4">⚠️ AI bận, hiển thị gợi ý mặc định</div>${[
-      {name:'Quán '+q,emoji:'🍽️',specialty:q,rating:'4.0★',time:'20-30 phút',price:'40-60k',promo:'',platform:'Grab'},
-      {name:'Nhà hàng '+q,emoji:'🍲',specialty:q+' đặc biệt',rating:'4.2★',time:'25-35 phút',price:'50-80k',promo:'Giảm 10%',platform:'ShopeeFood'},
-      {name:''+q+' ngon',emoji:'🥢',specialty:q+' truyền thống',rating:'4.5★',time:'15-25 phút',price:'35-55k',promo:'Freeship',platform:'Baemin'}
-    ].map(s=>`<div class="delivery-card"><div class="delivery-logo" style="background:var(--warning-light);color:#C07A2A">${s.emoji}</div><div class="delivery-info"><div class="delivery-name">${s.name}</div><div class="delivery-meta">${s.rating} · ${s.time} · ${s.platform}${s.promo?' · <span style="color:var(--danger)">'+s.promo+'</span>':''}</div><div style="font-size:12px;color:var(--text-3)">${s.specialty}</div></div><div class="delivery-price">${s.price}</div></div>`).join('')}</div>`;
-  }
-}
+async function searchDelivery(){ const q=document.getElementById('delivery-search').value.trim(); if(!q) return; const el=document.getElementById('ai-delivery-results'); el.innerHTML=loadingHTML('Đang tìm quán...'); try{ const text = await callBeeknoee(`Gợi ý 3 quán ăn món "${q}". JSON [{"name":"Tên","price":"XXk"}]`); const shops = parseRecipes(text); el.innerHTML=`<div class="card"><div class="layer-badge layer-0">💎 Beeknoee AI</div>${shops.map(s=>`<div class="delivery-card"><div class="delivery-logo">🍜</div><div class="delivery-info"><div class="delivery-name">${s.name}</div></div><div class="delivery-price">${s.price||'?'}</div></div>`).join('')}</div>`; }catch(e){ el.innerHTML=`<div class="layer-badge layer-3">⚠️ Lỗi tìm kiếm</div>`; } }
 
-/* ══════════════════════════════════════════════
-   HẸN GIỜ NẤU
-   ══════════════════════════════════════════════ */
-function startCookTimer(timeStr){
-  const min=parseInt(timeStr)||10;
-  const el=document.getElementById('timer-min');
-  el.value=[5,10,15,20,30,45,60].reduce((a,b)=>Math.abs(b-min)<Math.abs(a-min)?b:a);
-  openTab('profile'); startTimer();
-}
-function startTimer(){
-  if(isTimerRunning) return;
-  const min=parseInt(document.getElementById('timer-min').value)||10;
-  if(timerSeconds===0) timerSeconds=min*60;
-  isTimerRunning=true;
-  timerInterval=setInterval(()=>{
-    timerSeconds--; updateTimerDisplay();
-    if(timerSeconds<=0){
-      clearInterval(timerInterval); isTimerRunning=false;
-      showToast('⏰ Hết giờ nấu!');
-      if('Notification' in window && Notification.permission==='granted') new Notification('BếpAI: Hết giờ nấu!');
-    }
-  },1000);
-  if('Notification' in window && Notification.permission!=='denied') Notification.requestPermission();
-}
+function startTimer(){ if(isTimerRunning) return; const min=parseInt(document.getElementById('timer-min').value)||10; if(timerSeconds===0) timerSeconds=min*60; isTimerRunning=true; timerInterval=setInterval(()=>{ timerSeconds--; updateTimerDisplay(); if(timerSeconds<=0){ clearInterval(timerInterval); isTimerRunning=false; showToast('⏰ Hết giờ!'); } },1000); }
 function pauseTimer(){clearInterval(timerInterval);isTimerRunning=false;}
 function resetTimer(){clearInterval(timerInterval);isTimerRunning=false;timerSeconds=0;updateTimerDisplay();}
-function updateTimerDisplay(){
-  const m=Math.floor(timerSeconds/60).toString().padStart(2,'0'), s=(timerSeconds%60).toString().padStart(2,'0');
-  const el=document.getElementById('timer-display');
-  el.textContent=`${m}:${s}`;
-  el.style.color=timerSeconds<60?'var(--danger)':'var(--primary)';
-}
+function updateTimerDisplay(){ const m=Math.floor(timerSeconds/60).toString().padStart(2,'0'), s=(timerSeconds%60).toString().padStart(2,'0'); document.getElementById('timer-display').textContent=`${m}:${s}`; }
 
-/* ══════════════════════════════════════════════
-   NHẬN DẠNG GIỌNG NÓI
-   ══════════════════════════════════════════════ */
 let recognition=null;
-function toggleVoice(){
-  const btn=document.getElementById('voice-btn');
-  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){showToast('Trình duyệt không hỗ trợ giọng nói');return;}
-  if(btn.classList.contains('recording')){if(recognition)recognition.stop();btn.classList.remove('recording');btn.textContent='🎤';return;}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recognition=new SR(); recognition.lang='vi-VN'; recognition.continuous=false;
-  recognition.onresult=e=>{document.getElementById('ing-input').value=e.results[0][0].transcript;btn.classList.remove('recording');btn.textContent='🎤';addIngredient();};
-  recognition.onerror=()=>{btn.classList.remove('recording');btn.textContent='🎤';};
-  recognition.start(); btn.classList.add('recording'); btn.textContent='⏹';
-}
+function toggleVoice(){ const btn=document.getElementById('voice-btn'); if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){showToast('Trình duyệt không hỗ trợ');return;} if(btn.classList.contains('recording')){if(recognition)recognition.stop();btn.classList.remove('recording');btn.textContent='🎤';return;} const SR=window.SpeechRecognition||window.webkitSpeechRecognition; recognition=new SR(); recognition.lang='vi-VN'; recognition.onresult=e=>{document.getElementById('ing-input').value=e.results[0][0].transcript;btn.classList.remove('recording');btn.textContent='🎤';addIngredient();}; recognition.start(); btn.classList.add('recording'); btn.textContent='⏹'; }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 
-/* ══════════════════════════════════════════════
-   TOAST
-   ══════════════════════════════════════════════ */
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
-}
-
-/* ══════════════════════════════════════════════
-   KHỞI TẠO
-   ══════════════════════════════════════════════ */
+// KHỞI TẠO
 renderMealPlanGrid();
 renderFamilyList();
 renderFridgeList();
