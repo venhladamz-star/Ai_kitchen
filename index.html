@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
@@ -149,8 +151,8 @@ select:focus{border-color:var(--primary)}
   <div class="modal-content-custom">
     <div style="font-size:50px;margin-bottom:15px">👋</div>
     <h2 style="color:var(--primary);margin-bottom:15px;font-weight:800">Chào Bạn!</h2>
-    <p style="color:var(--text);font-weight:600;margin-bottom:12px;font-size:15px">Cảm ơn bạn đã tin tưởng sử dụng AI gợi ý của HIS</p>
-    <p style="color:var(--text-2);font-size:13px;line-height:1.6;margin-bottom:25px">Vì là startup nên kinh phí hạn hẹp, AI có thể phản hồi chậm hoặc mất kết nối đôi chút. Rất mong bạn thông cảm!</p>
+    <p style="color:var(--text);font-weight:600;margin-bottom:12px;font-size:15px">Hệ thống đã nâng cấp lên 6 lớp AI dự phòng.</p>
+    <p style="color:var(--text-2);font-size:13px;line-height:1.6;margin-bottom:25px">Nếu một hệ thống gặp lỗi, ứng dụng sẽ tự động chuyển sang hệ thống khác để đảm bảo bạn luôn có món ngon!</p>
     <button class="btn-primary" onclick="closePopup()">Tôi đã hiểu</button>
   </div>
 </div>
@@ -183,7 +185,6 @@ select:focus{border-color:var(--primary)}
 <div class="app-body">
 <div class="content-area">
 
-  <!-- HOME -->
   <div class="section active" id="sec-home">
     <div class="hero">
       <h1>Hôm nay ăn gì? 🤔</h1>
@@ -221,7 +222,6 @@ select:focus{border-color:var(--primary)}
     </div>
   </div>
 
-  <!-- SUGGEST -->
   <div class="section" id="sec-suggest">
     <div class="card">
       <div class="card-title"><span class="icon">🥕</span> Nguyên liệu có sẵn</div>
@@ -272,16 +272,16 @@ select:focus{border-color:var(--primary)}
       </div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="icon">🎯</span> Tình huống / Cảm xúc</div>
+      <div class="card-title"><span class="icon">🎯</span> Bạn muốn thưởng thức món ăn như thế nào?</div>
       <div class="emotion-wrap" id="emotion-tags">
-        <span class="emotion-tag" onclick="toggleEmotion(this)">🌧️ Trời mưa</span>
-        <span class="emotion-tag" onclick="toggleEmotion(this)">🎉 Đãi bạn</span>
-        <span class="emotion-tag" onclick="toggleEmotion(this)">😔 Tâm trạng buồn</span>
-        <span class="emotion-tag" onclick="toggleEmotion(this)">🏃 Ăn nhanh</span>
-        <span class="emotion-tag" onclick="toggleEmotion(this)">💪 Tăng cơ</span>
+        <span class="emotion-tag" onclick="toggleEmotion(this)">🧂 Món mặn</span>
+        <span class="emotion-tag" onclick="toggleEmotion(this)">🍰 Món ngọt</span>
+        <span class="emotion-tag" onclick="toggleEmotion(this)">🥦 Món chay</span>
         <span class="emotion-tag" onclick="toggleEmotion(this)">🥗 Giảm cân</span>
-        <span class="emotion-tag" onclick="toggleEmotion(this)">💰 Tiết kiệm</span>
-        <span class="emotion-tag" onclick="toggleEmotion(this)">👶 Cho trẻ em</span>
+        <span class="emotion-tag" onclick="toggleEmotion(this)">💪 Tăng cân</span>
+        <span class="emotion-tag" onclick="toggleEmotion(this)">❄️ Món lạnh</span>
+        <span class="emotion-tag" onclick="toggleEmotion(this)">🔥 Món nóng</span>
+        <span class="emotion-tag" onclick="toggleEmotion(this)">🥤 Nước uống</span>
       </div>
     </div>
     <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center" class="suggest-row">
@@ -296,7 +296,6 @@ select:focus{border-color:var(--primary)}
     <div id="suggest-results"></div>
   </div>
 
-  <!-- FRIDGE -->
   <div class="section" id="sec-fridge">
     <div class="card">
       <div class="card-title"><span class="icon">🧊</span> Quản lý tủ lạnh</div>
@@ -318,7 +317,6 @@ select:focus{border-color:var(--primary)}
     <div id="fridge-suggest-results"></div>
   </div>
 
-  <!-- SHOPPING -->
   <div class="section" id="sec-shopping">
     <div class="card">
       <div class="card-title"><span class="icon">🛒</span> Thêm vào danh sách</div>
@@ -351,7 +349,6 @@ select:focus{border-color:var(--primary)}
     </div>
   </div>
 
-  <!-- MEAL PLAN -->
   <div class="section" id="sec-mealplan">
     <div class="card">
       <div class="card-title"><span class="icon">📅</span> Thực đơn tuần này</div>
@@ -361,7 +358,6 @@ select:focus{border-color:var(--primary)}
     <div id="meal-plan-results"></div>
   </div>
 
-  <!-- DELIVERY -->
   <div class="section" id="sec-delivery">
     <div class="card">
       <div class="card-title"><span class="icon">🚴</span> Tìm đồ ăn giao về</div>
@@ -385,7 +381,6 @@ select:focus{border-color:var(--primary)}
     <div id="ai-delivery-results"></div>
   </div>
 
-  <!-- PROFILE -->
   <div class="section" id="sec-profile">
     <div class="card">
       <div class="card-title"><span class="icon">🎯</span> Mục tiêu của bạn</div>
@@ -633,55 +628,34 @@ function parseRecipes(text){
   }catch(err){ return []; }
 }
 
-// ★★★ BUILD PROMPT - CHUYÊN GIA ẨM THỰC VIỆT NAM ★★★
 function buildPrompt({mood='',count=4,extra='',fromFridge=false,forFamily=false}={}){
   const p=[];
-
-  // === ROLE ===
-  p.push(`Bạn là chuyên gia ẩm thực Việt Nam tích hợp dữ liệu từ Cookpad và các trang tin sức khỏe đời sống.`);
-  p.push(`Nhiệm vụ của bạn là nhận danh sách nguyên liệu và gợi ý món ăn phù hợp với khẩu vị người Việt.`);
-
-  // === INPUT - Nguyên liệu ===
-  const ingList = fromFridge && fridgeItems.length
-    ? fridgeItems.map(f=>f.name)
-    : ingredients;
-
-  if(ingList.length) {
-    p.push(`\n★ Nguyên liệu người dùng cung cấp: ${ingList.join(', ')}`);
-  } else if(forFamily && familyMembers.length) {
-    p.push(`\n★ Nấu cho gia đình gồm: ${familyMembers.map(m=>m.name+' ('+m.pref+')').join(', ')}`);
+  p.push(`Bạn là đầu bếp AI chuyên nghiệp. Hãy gợi ý ${count} món ăn ngon theo yêu cầu sau:`);
+  
+  // Yêu cầu bắt buộc về nguyên liệu
+  if(ingredients.length) {
+    p.push(`\n★ QUAN TRỌNG: Bạn PHẢI gợi ý các món có thể làm được bằng các nguyên liệu sau: ${ingredients.join(', ')}.`);
+    p.push(`Đây là nguyên liệu chính, không cần thêm nguyên liệu lạ nếu không cần thiết.`);
   }
-
-  // === Bộ lọc bổ sung ===
-  const ft=document.getElementById('filter-time')?.value; if(ft) p.push(`- Thời gian nấu mong muốn: ${ft}`);
+  
+  if(fromFridge&&fridgeItems.length) p.push(`- Ưu tiên dùng nguyên liệu có trong tủ lạnh: ${fridgeItems.map(f=>f.name).join(', ')}`);
+  if(selectedDevices.length) p.push(`- Thiết bị nấu: ${selectedDevices.join(', ')}`);
+  
+  const ft=document.getElementById('filter-time')?.value; if(ft) p.push(`- Thời gian nấu: ${ft}`);
   const fm=document.getElementById('filter-meal')?.value; if(fm) p.push(`- Loại bữa: ${fm}`);
-  const em=selectedEmotions.length?selectedEmotions.join(', '):(mood||''); if(em) p.push(`- Tình huống/Tâm trạng: ${em}`);
-  if(selectedDevices.length) p.push(`- Thiết bị nấu có sẵn: ${selectedDevices.join(', ')}`);
-  if(allergies.length) p.push(`- TUYỆT ĐỐI KHÔNG dùng (dị ứng): ${allergies.join(', ')}`);
-  if(preferences.length) p.push(`- Sở thích ăn uống: ${preferences.join(', ')}`);
-  if(goals.length) p.push(`- Mục tiêu dinh dưỡng: ${goals.join(', ')}`);
+  
+  const em=selectedEmotions.length?selectedEmotions.join(', '):(mood||''); if(em) p.push(`- Tình huống: ${em}`);
+  if(allergies.length) p.push(`- TUYỆT ĐỐI KHÔNG dùng: ${allergies.join(', ')}`);
+  if(preferences.length) p.push(`- Sở thích: ${preferences.join(', ')}`);
+  if(goals.length) p.push(`- Mục tiêu: ${goals.join(', ')}`);
   if(extra) p.push(extra);
-
-  // === TASKS ===
-  p.push(`\n=== NHIỆM VỤ ===`);
-  p.push(`1. Phân tích các nguyên liệu chính và phụ từ danh sách trên.`);
-  p.push(`2. Gợi ý ${count} món ăn phổ biến tại Việt Nam (Bắc, Trung, Nam) từ danh sách đó.`);
-  p.push(`3. Phân loại các món theo thang độ khó: Dễ (dưới 20 phút), Trung bình (20-45 phút), Khó (trên 45 phút / cầu kỳ).`);
-
-  // === CONSTRAINTS ===
-  p.push(`\n=== RÀNG BUỘC ===`);
-  p.push(`- Chỉ gợi ý các món ăn Việt Nam.`);
-  p.push(`- Mặc định người dùng đã có sẵn gia vị cơ bản (mắm, muối, dầu ăn, đường, hành, tỏi). Trường "ingredients" chỉ liệt kê nguyên liệu ngoài các gia vị này.`);
-  p.push(`- Ưu tiên các món có thể kết hợp thành một mâm cơm gia đình hoàn chỉnh.`);
-  p.push(`- Nếu nguyên liệu không đủ để nấu một món hoàn chỉnh, hãy thêm 1 món "Sáng tạo" dựa trên nguyên liệu chính với tên bắt đầu bằng "🌟 Sáng tạo:".`);
-  p.push(`- Trường "desc" phải nêu rõ: hương vị đặc trưng và lý do nên nấu món này.`);
-  p.push(`- Trường "difficulty" chỉ nhận 1 trong 3 giá trị: "Dễ", "Trung bình", "Khó".`);
-
-  // === OUTPUT FORMAT ===
-  p.push(`\n=== ĐỊNH DẠNG TRẢ VỀ ===`);
-  p.push(`Chỉ trả về chuỗi JSON thuần túy (không markdown, không backtick), đúng format sau:`);
-  p.push(`[{"name":"Tên món","emoji":"emoji phù hợp","time":"X phút","difficulty":"Dễ|Trung bình|Khó","calories":"XXX kcal","desc":"Hương vị + lý do nên nấu","ingredients":["nguyên liệu 1","nguyên liệu 2"],"steps":["Bước 1: ...","Bước 2: ..."],"tips":"Mẹo nhỏ từ đầu bếp"}]`);
-
+  
+  // Yêu cầu định dạng đầu ra rõ ràng
+  p.push(`\nQuy tắc trả về:
+1. Chỉ trả về chuỗi JSON thuần, không markdown.
+2. Mảng nguyên liệu phải liệt kê đầy đủ các nguyên liệu chính đã nhập ở trên.
+3. Format: [{"name":"Tên món","emoji":"emoji","time":"X phút","difficulty":"Dễ","calories":"XXX kcal","desc":"Mô tả ngắn gọn nguyên liệu chính được dùng","ingredients":["nguyên liệu 1","nguyên liệu 2"],"steps":["Bước 1","Bước 2"],"tips":"Mẹo"}]`);
+  
   return p.join('\n');
 }
 
@@ -716,7 +690,11 @@ function renderRecipesHTML(recipes, inputList = []){
         <strong>📝 Nguyên liệu bạn có:</strong> ${inputList.join(', ')}
       </div>` : '';
 
-    return `<div class="recipe-card">${badge}<div class="recipe-header">${imgHtml}<div class="recipe-name">${r.name}</div><div class="recipe-meta"><span class="meta-chip chip-time">⏱️ ${r.time}</span><span class="meta-chip chip-diff">👨‍🍳 ${r.difficulty}</span><span class="meta-chip chip-cal">🔥 ${r.calories}</span></div><div class="recipe-desc">${r.desc}</div></div><div class="recipe-body">${inputCheckHtml}<div class="recipe-section"><div class="recipe-section-title">Nguyên liệu cần dùng</div><div class="ingredient-list">${ingsHtml}</div></div><div class="recipe-section"><div class="recipe-section-title">Cách làm</div><ol class="steps-list">${(r.steps||[]).map((s,j)=>`<li><span class="step-num">${j+1}</span>${s}</li>`).join('')}</ol></div>${r.tips?`<div class="recipe-section"><div class="recipe-section-title">💡 Mẹo</div><div style="font-size:13px;color:var(--text-2)">${r.tips}</div></div>`:''}</div><div class="recipe-actions"><button class="btn-sm" onclick="addToShopFrom('last',${i})">🛒 Mua thêm</button><button class="btn-sm liked" onclick="showToast('❤️ Đã lưu!')">❤️ Lưu</button></div></div>`;
+    // Lấy tên món ăn và escape dấu nháy đơn để tránh lỗi JS
+    const safeRecipeName = r.name ? r.name.replace(/'/g, "\\'") : '';
+
+    // THÊM NÚT XEM VIDEO Ở ĐÂY
+    return `<div class="recipe-card">${badge}<div class="recipe-header">${imgHtml}<div class="recipe-name">${r.name}</div><div class="recipe-meta"><span class="meta-chip chip-time">⏱️ ${r.time}</span><span class="meta-chip chip-diff">👨‍🍳 ${r.difficulty}</span><span class="meta-chip chip-cal">🔥 ${r.calories}</span></div><div class="recipe-desc">${r.desc}</div></div><div class="recipe-body">${inputCheckHtml}<div class="recipe-section"><div class="recipe-section-title">Nguyên liệu cần dùng</div><div class="ingredient-list">${ingsHtml}</div></div><div class="recipe-section"><div class="recipe-section-title">Cách làm</div><ol class="steps-list">${(r.steps||[]).map((s,j)=>`<li><span class="step-num">${j+1}</span>${s}</li>`).join('')}</ol></div>${r.tips?`<div class="recipe-section"><div class="recipe-section-title">💡 Mẹo</div><div style="font-size:13px;color:var(--text-2)">${r.tips}</div></div>`:''}</div><div class="recipe-actions"><button class="btn-sm" onclick="addToShopFrom('last',${i})">🛒 Mua thêm</button><button class="btn-sm liked" onclick="showToast('❤️ Đã lưu!')">❤️ Lưu</button><button class="btn-sm" onclick="openVideo('${safeRecipeName}')" style="background:var(--secondary-light);color:var(--secondary);border-color:var(--secondary)">▶️ Xem Video</button></div></div>`;
   }).join('')}</div>`;
 }
 
@@ -730,6 +708,12 @@ function openTab(tab){
   document.getElementById('sec-'+tab).classList.add('active');
   TABS.forEach(t=>{ const s=document.getElementById('snav-'+t); if(s)s.classList.toggle('active',t===tab); const b=document.getElementById('bnav-'+t); if(b)b.classList.toggle('active',t===tab); });
   if(tab==='mealplan') renderMealPlanGrid();
+}
+
+// Hàm mở video hướng dẫn món ăn
+function openVideo(recipeName) {
+  const query = encodeURIComponent("cách làm món " + recipeName);
+  window.open(`https://www.youtube.com/results?search_query=${query}`, '_blank');
 }
 
 function addIngredient(){ const inp=document.getElementById('ing-input'); const v=inp.value.trim(); if(!v) return; v.split(/[,،]/).map(x=>x.trim()).filter(Boolean).forEach(x=>{if(!ingredients.includes(x))ingredients.push(x);}); inp.value=''; renderIngTags(); }
