@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>BếpAI - Gợi Ý Món Ăn Thông Minh (6 Lớp AI)</title>
+  <title>BếpAI - Gợi Ý Món Ăn Thông Minh (AI Đua Song Song)</title>
   <style>
     /* GIỮ NGUYÊN CSS CŨ, THÊM MỘT SỐ STYLE CHO BADGE */
     .modal-overlay-custom {
@@ -1830,7 +1830,7 @@
 
   <script>
     /* ══════════════════════════════════════════════
-       CẤU HÌNH API - 6 LỚP DỰ PHÒNG
+       CẤU HÌNH API - GỌI SONG SONG TẤT CẢ MODEL, AI NÀO XONG TRƯỚC DÙNG LUÔN
        ══════════════════════════════════════════════ */
     const MISTRAL_KEY = 'C6M7F3663wXaOawLfH9wOHaFRsZ11hot';
     const SPOON_KEY = '3e72812b653a4f77a757e343b1b364e0';
@@ -1901,64 +1901,56 @@
       return text;
     }
 
-    // Lớp 1: OpenRouter Cluster (nhiều model free, tự chuyển model kế tiếp khi lỗi/hết quota)
-    async function callOpenRouter(prompt, modelIndex = 0) {
-      if (modelIndex >= OPENROUTER_MODELS.length) throw new Error('Hết model OpenRouter');
-
-      try {
-        const r = await fetch(OPENROUTER_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + OPENROUTER_KEY
-          },
-          body: JSON.stringify({
-            model: OPENROUTER_MODELS[modelIndex],
-            messages: [{ role: 'user', content: prompt }],
-            temperature: 0.7
-          })
-        });
-
-        if (!r.ok) throw new Error(`Model ${OPENROUTER_MODELS[modelIndex]} lỗi HTTP ${r.status}`);
-
+    // Lớp 1: OpenRouter Cluster — gọi SONG SONG tất cả model, ai xong trước lấy kết quả đó
+    function callOpenRouterModel(prompt, model) {
+      return fetch(OPENROUTER_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + OPENROUTER_KEY
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.7
+        })
+      }).then(async r => {
+        if (!r.ok) throw new Error(`Model ${model} lỗi HTTP ${r.status}`);
         const data = await r.json();
         const content = data.choices?.[0]?.message?.content;
-        if (!content) throw new Error('OpenRouter không trả về nội dung');
+        if (!content) throw new Error(`Model ${model} không trả về nội dung`);
         return content;
-      } catch (e) {
-        console.warn(`⚠️ OpenRouter model ${OPENROUTER_MODELS[modelIndex]} thất bại, chuyển model dự phòng...`);
-        return callOpenRouter(prompt, modelIndex + 1);
-      }
+      });
+    }
+    // Trả về mảng Promise, mỗi Promise ứng với 1 model OpenRouter — dùng cho đua song song
+    function openRouterPromises(prompt) {
+      return OPENROUTER_MODELS.map(model => callOpenRouterModel(prompt, model));
     }
 
-    // Lớp 1.5: OrcaRouter Cluster (nhiều model free, tự chuyển model kế tiếp khi lỗi/hết quota)
-    async function callOrcaRouter(prompt, modelIndex = 0) {
-      if (modelIndex >= ORCAROUTER_MODELS.length) throw new Error('Hết model OrcaRouter');
-
-      try {
-        const r = await fetch(ORCAROUTER_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + ORCAROUTER_KEY
-          },
-          body: JSON.stringify({
-            model: ORCAROUTER_MODELS[modelIndex],
-            messages: [{ role: 'user', content: prompt }],
-            temperature: 0.7
-          })
-        });
-
-        if (!r.ok) throw new Error(`Model ${ORCAROUTER_MODELS[modelIndex]} lỗi HTTP ${r.status}`);
-
+    // Lớp 1.5: OrcaRouter Cluster — gọi SONG SONG tất cả model, ai xong trước lấy kết quả đó
+    function callOrcaRouterModel(prompt, model) {
+      return fetch(ORCAROUTER_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + ORCAROUTER_KEY
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.7
+        })
+      }).then(async r => {
+        if (!r.ok) throw new Error(`Model ${model} lỗi HTTP ${r.status}`);
         const data = await r.json();
         const content = data.choices?.[0]?.message?.content;
-        if (!content) throw new Error('OrcaRouter không trả về nội dung');
+        if (!content) throw new Error(`Model ${model} không trả về nội dung`);
         return content;
-      } catch (e) {
-        console.warn(`⚠️ OrcaRouter model ${ORCAROUTER_MODELS[modelIndex]} thất bại, chuyển model dự phòng...`);
-        return callOrcaRouter(prompt, modelIndex + 1);
-      }
+      });
+    }
+    // Trả về mảng Promise, mỗi Promise ứng với 1 model OrcaRouter — dùng cho đua song song
+    function orcaRouterPromises(prompt) {
+      return ORCAROUTER_MODELS.map(model => callOrcaRouterModel(prompt, model));
     }
 
     // Lớp 2: Mistral AI
@@ -1981,19 +1973,34 @@
       return data.results || [];
     }
 
-    // Hàm gọi AI nhanh dùng cho các tính năng phụ (thực đơn 7 ngày, gợi ý quán ăn) - chỉ qua 2 lớp AI nhanh nhất, không cần toàn bộ 5 lớp
+    // Hàm gọi AI nhanh dùng cho các tính năng phụ (thực đơn 7 ngày, gợi ý quán ăn)
+    // Đua song song Gemini + toàn bộ model OpenRouter + OrcaRouter, ai xong trước dùng luôn
     async function callQuickAI(prompt) {
-      try {
-        return await callGemini(prompt);
-      } catch (e) {
-        console.warn('⚠️ Gemini lỗi, chuyển sang OpenRouter...', e.message);
-        try {
-          return await callOpenRouter(prompt);
-        } catch (e2) {
-          console.warn('⚠️ OpenRouter lỗi, chuyển sang OrcaRouter...', e2.message);
-          return await callOrcaRouter(prompt);
-        }
-      }
+      const racers = [
+        callGemini(prompt),
+        ...openRouterPromises(prompt),
+        ...orcaRouterPromises(prompt)
+      ];
+      return await raceFirstSuccess(racers, 'Tất cả AI (Quick) đều lỗi');
+    }
+
+    /* ══════════════════════════════════════════════
+       ĐUA SONG SONG (RACE) - LẤY KẾT QUẢ ĐẦU TIÊN THÀNH CÔNG
+       ══════════════════════════════════════════════ */
+    // Nhận vào mảng Promise, trả về giá trị của Promise ĐẦU TIÊN resolve thành công.
+    // Nếu TẤT CẢ đều reject thì mới báo lỗi (khác Promise.race gốc: race gốc trả
+    // luôn kết quả đầu tiên dù đó là lỗi).
+    function raceFirstSuccess(promises, errMsg) {
+      return new Promise((resolve, reject) => {
+        let remaining = promises.length;
+        if (remaining === 0) { reject(new Error(errMsg || 'Không có nguồn nào để gọi')); return; }
+        promises.forEach(p => {
+          Promise.resolve(p).then(resolve).catch(() => {
+            remaining--;
+            if (remaining === 0) reject(new Error(errMsg || 'Tất cả nguồn đều lỗi'));
+          });
+        });
+      });
     }
 
     // Lớp 4: Dữ liệu tĩnh
@@ -2043,55 +2050,39 @@
     }
 
     /* ══════════════════════════════════════════════
-       SMART SUGGEST - ĐIỀU HƯỚNG 7 LỚP
+       SMART SUGGEST - ĐUA SONG SONG TẤT CẢ AI, AI NÀO XONG TRƯỚC LẤY LUÔN
        ══════════════════════════════════════════════ */
     async function smartSuggest({ targetEl, prompt, query, count, loadingMsg, inputIngredients }) {
-      targetEl.innerHTML = loadingHTML(loadingMsg || 'Đang kết nối AI...');
+      targetEl.innerHTML = loadingHTML(loadingMsg || 'Đang gọi tất cả AI cùng lúc...');
 
-      // LỚP 0: GOOGLE GEMINI
-      try {
-        targetEl.innerHTML = loadingHTML('✨ Lớp 0: Google Gemini đang xử lý...');
-        const text = await callGemini(prompt);
-        const recipes = parseRecipes(text);
-        if (recipes.length > 0) return recipes.map(r => ({ ...r, source: 'gemini', matchedInputs: inputIngredients || [] }));
-      } catch (e) {
-        console.warn('⚠️ Gemini lỗi:', e.message);
+      // Gói mỗi lệnh gọi model kèm nhãn nguồn (source), rồi parse & lọc ngay khi có kết quả.
+      // Promise nào ra công thức hợp lệ trước sẽ được dùng ngay lập tức.
+      function tag(promise, source) {
+        return promise.then(text => {
+          const recipes = parseRecipes(text);
+          if (!recipes.length) throw new Error(`${source} không trả JSON hợp lệ`);
+          return recipes.map(r => ({ ...r, source, matchedInputs: inputIngredients || [] }));
+        });
       }
 
-      // LỚP 1: OPENROUTER CLUSTER
+      const racers = [
+        tag(callGemini(prompt), 'gemini'),
+        ...OPENROUTER_MODELS.map(m => tag(callOpenRouterModel(prompt, m), 'openrouter')),
+        ...ORCAROUTER_MODELS.map(m => tag(callOrcaRouterModel(prompt, m), 'orcarouter')),
+        tag(callMistral(prompt), 'mistral')
+      ];
+
+      targetEl.innerHTML = loadingHTML(`🚀 Đang đua ${racers.length} model AI song song...`);
+
       try {
-        targetEl.innerHTML = loadingHTML('🌐 Lớp 1: Chuyển sang OpenRouter Cluster...');
-        const text = await callOpenRouter(prompt);
-        const recipes = parseRecipes(text);
-        if (recipes.length > 0) return recipes.map(r => ({ ...r, source: 'openrouter', matchedInputs: inputIngredients || [] }));
+        return await raceFirstSuccess(racers, 'Tất cả AI đều lỗi');
       } catch (e) {
-        console.warn('⚠️ OpenRouter Cluster lỗi:', e.message);
+        console.warn('⚠️ Tất cả model AI đều lỗi, chuyển sang Spoonacular:', e.message);
       }
 
-      // LỚP 1.5: ORCAROUTER CLUSTER
+      // LỚP DỰ PHÒNG: SPOONACULAR (chỉ dùng khi TOÀN BỘ AI ở trên đều thất bại)
       try {
-        targetEl.innerHTML = loadingHTML('🐋 Lớp 1.5: Chuyển sang OrcaRouter Cluster...');
-        const text = await callOrcaRouter(prompt);
-        const recipes = parseRecipes(text);
-        if (recipes.length > 0) return recipes.map(r => ({ ...r, source: 'orcarouter', matchedInputs: inputIngredients || [] }));
-      } catch (e) {
-        console.warn('⚠️ OrcaRouter Cluster lỗi:', e.message);
-      }
-
-      // LỚP 2: MISTRAL AI
-      try {
-        targetEl.innerHTML = loadingHTML('🤖 Lớp 2: Chuyển sang Mistral AI dự phòng...');
-        const text = await callMistral(prompt);
-        const recipes = parseRecipes(text);
-        if (recipes.length > 0) return recipes.map(r => ({ ...r, source: 'mistral', matchedInputs: inputIngredients || [] }));
-      } catch (e) {
-        console.warn('⚠️ Mistral lỗi');
-      }
-
-      // LỚP 3: SPOONACULAR
-      try {
-        targetEl.innerHTML = loadingHTML('🛡️ Lớp 3: Lấy dữ liệu từ Spoonacular...');
-        // Dùng chính xác query từ nguyên liệu nhập vào
+        targetEl.innerHTML = loadingHTML('🛡️ Tất cả AI lỗi, lấy dữ liệu từ Spoonacular...');
         const spoonData = await callSpoonacular(query || 'vietnamese food');
         const recipes = formatSpoonacularToRecipes(spoonData, inputIngredients);
         if (recipes.length > 0) return recipes.map(r => ({ ...r, matchedInputs: inputIngredients || [] }));
@@ -2099,9 +2090,9 @@
         console.warn('⚠️ Spoonacular lỗi');
       }
 
-      // LỚP 4: DỮ LIỆU TĨNH
+      // LỚP DỰ PHÒNG CUỐI: DỮ LIỆU TĨNH
       console.warn('🛑 Tất cả API lỗi -> Dùng dữ liệu tĩnh');
-      targetEl.innerHTML = loadingHTML('📦 Lớp 4: Dữ liệu nội bộ...');
+      targetEl.innerHTML = loadingHTML('📦 Dùng dữ liệu nội bộ...');
       return getStaticFallback();
     }
 
@@ -2162,7 +2153,7 @@
         if (r.source === 'gemini') badge = `<div class="layer-badge layer-0">✨ Google Gemini</div>`;
         else if (r.source === 'openrouter') badge = `<div class="layer-badge layer-1">🌐 OpenRouter</div>`;
         else if (r.source === 'orcarouter') badge = `<div class="layer-badge layer-1">🐋 OrcaRouter</div>`;
-        else if (r.source === 'mistral') badge = `<div class="layer-badge layer-2">🤖 Mistral AI (Dự phòng)</div>`;
+        else if (r.source === 'mistral') badge = `<div class="layer-badge layer-2">🤖 Mistral AI</div>`;
         else if (r.source === 'spoonacular') badge = `<div class="layer-badge layer-3">🛡️ Spoonacular (CSDL QT)</div>`;
         else badge = `<div class="layer-badge layer-4">📦 Dữ liệu nội bộ (Offline)</div>`;
 
