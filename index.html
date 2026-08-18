@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>BếpAI - Gợi Ý Món Ăn Thông Minh (5 Lớp AI)</title>
+  <title>BếpAI - Gợi Ý Món Ăn Thông Minh (6 Lớp AI)</title>
   <style>
     /* GIỮ NGUYÊN CSS CŨ, THÊM MỘT SỐ STYLE CHO BADGE */
     .modal-overlay-custom {
@@ -1830,7 +1830,7 @@
 
   <script>
     /* ══════════════════════════════════════════════
-       CẤU HÌNH API - 5 LỚP DỰ PHÒNG
+       CẤU HÌNH API - 6 LỚP DỰ PHÒNG
        ══════════════════════════════════════════════ */
     const MISTRAL_KEY = 'C6M7F3663wXaOawLfH9wOHaFRsZ11hot';
     const SPOON_KEY = '3e72812b653a4f77a757e343b1b364e0';
@@ -1855,6 +1855,17 @@
       'qwen/qwen3-next-80b-a3b-instruct:free',
       'meta-llama/llama-3.3-70b-instruct:free',
       'openrouter/free'
+    ];
+
+    // OrcaRouter (Lớp 1.5 - Cluster dự phòng thêm, tự xoay vòng khi model lỗi/hết quota)
+    const ORCAROUTER_KEY = 'sk-orca-riUFiHSOIGLnXWRXOd6iQKtlB0L32Eq1FdbeeV2dBwP';
+    const ORCAROUTER_URL = 'https://api.orcarouter.com/v1/chat/completions';
+    const ORCAROUTER_MODELS = [
+      'deepseek/deepseek-v4-flash-free',
+      'deepseek/deepseek-v4-pro-free',
+      'tencent/hy3-free',
+      'orcarouter/free',
+      'qwen/qwen3.8-27b-free'
     ];
 
     /* ══════════════════════════════════════════════
@@ -1920,6 +1931,36 @@
       }
     }
 
+    // Lớp 1.5: OrcaRouter Cluster (nhiều model free, tự chuyển model kế tiếp khi lỗi/hết quota)
+    async function callOrcaRouter(prompt, modelIndex = 0) {
+      if (modelIndex >= ORCAROUTER_MODELS.length) throw new Error('Hết model OrcaRouter');
+
+      try {
+        const r = await fetch(ORCAROUTER_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + ORCAROUTER_KEY
+          },
+          body: JSON.stringify({
+            model: ORCAROUTER_MODELS[modelIndex],
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.7
+          })
+        });
+
+        if (!r.ok) throw new Error(`Model ${ORCAROUTER_MODELS[modelIndex]} lỗi HTTP ${r.status}`);
+
+        const data = await r.json();
+        const content = data.choices?.[0]?.message?.content;
+        if (!content) throw new Error('OrcaRouter không trả về nội dung');
+        return content;
+      } catch (e) {
+        console.warn(`⚠️ OrcaRouter model ${ORCAROUTER_MODELS[modelIndex]} thất bại, chuyển model dự phòng...`);
+        return callOrcaRouter(prompt, modelIndex + 1);
+      }
+    }
+
     // Lớp 2: Mistral AI
     async function callMistral(prompt) {
       const r = await fetch('https://api.mistral.ai/v1/chat/completions', {
@@ -1946,7 +1987,12 @@
         return await callGemini(prompt);
       } catch (e) {
         console.warn('⚠️ Gemini lỗi, chuyển sang OpenRouter...', e.message);
-        return await callOpenRouter(prompt);
+        try {
+          return await callOpenRouter(prompt);
+        } catch (e2) {
+          console.warn('⚠️ OpenRouter lỗi, chuyển sang OrcaRouter...', e2.message);
+          return await callOrcaRouter(prompt);
+        }
       }
     }
 
@@ -1997,7 +2043,7 @@
     }
 
     /* ══════════════════════════════════════════════
-       SMART SUGGEST - ĐIỀU HƯỚNG 6 LỚP
+       SMART SUGGEST - ĐIỀU HƯỚNG 7 LỚP
        ══════════════════════════════════════════════ */
     async function smartSuggest({ targetEl, prompt, query, count, loadingMsg, inputIngredients }) {
       targetEl.innerHTML = loadingHTML(loadingMsg || 'Đang kết nối AI...');
@@ -2020,6 +2066,16 @@
         if (recipes.length > 0) return recipes.map(r => ({ ...r, source: 'openrouter', matchedInputs: inputIngredients || [] }));
       } catch (e) {
         console.warn('⚠️ OpenRouter Cluster lỗi:', e.message);
+      }
+
+      // LỚP 1.5: ORCAROUTER CLUSTER
+      try {
+        targetEl.innerHTML = loadingHTML('🐋 Lớp 1.5: Chuyển sang OrcaRouter Cluster...');
+        const text = await callOrcaRouter(prompt);
+        const recipes = parseRecipes(text);
+        if (recipes.length > 0) return recipes.map(r => ({ ...r, source: 'orcarouter', matchedInputs: inputIngredients || [] }));
+      } catch (e) {
+        console.warn('⚠️ OrcaRouter Cluster lỗi:', e.message);
       }
 
       // LỚP 2: MISTRAL AI
@@ -2105,6 +2161,7 @@
         let badge = '';
         if (r.source === 'gemini') badge = `<div class="layer-badge layer-0">✨ Google Gemini</div>`;
         else if (r.source === 'openrouter') badge = `<div class="layer-badge layer-1">🌐 OpenRouter</div>`;
+        else if (r.source === 'orcarouter') badge = `<div class="layer-badge layer-1">🐋 OrcaRouter</div>`;
         else if (r.source === 'mistral') badge = `<div class="layer-badge layer-2">🤖 Mistral AI (Dự phòng)</div>`;
         else if (r.source === 'spoonacular') badge = `<div class="layer-badge layer-3">🛡️ Spoonacular (CSDL QT)</div>`;
         else badge = `<div class="layer-badge layer-4">📦 Dữ liệu nội bộ (Offline)</div>`;
